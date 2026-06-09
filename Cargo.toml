@@ -1,5 +1,5 @@
 [package]
-name = "syn"
+name = "syn-send"
 version = "2.0.117"
 authors = ["David Tolnay <dtolnay@gmail.com>"]
 categories = ["development-tools::procedural-macro-helpers", "parser-implementations"]
@@ -35,8 +35,9 @@ proc-macro = ["proc-macro2/proc-macro", "quote?/proc-macro"]
 test = ["syn-test-suite/all-features"]
 
 [dependencies]
-proc-macro2 = { version = "1.0.91", default-features = false }
-quote = { version = "1.0.35", optional = true, default-features = false }
+proc-macro2 = { package = "proc-macro2-send", git = "https://github.com/Riateche/proc-macro2.git", branch = "send", default-features = false }
+
+quote = { package = "quote-send", git = "https://github.com/Riateche/quote.git", branch = "send", optional = true, default-features = false }
 unicode-ident = "1"
 
 [dev-dependencies]
