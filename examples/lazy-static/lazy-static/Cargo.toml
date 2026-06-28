@@ -9,6 +9,6 @@ publish = false
 proc-macro = true
 
 [dependencies]
-proc-macro2 = { version = "1", features = ["nightly"] }
-quote = "1"
-syn = { package = "syn-send", path = "../../../", features = ["full"] }
+proc-macro2 = { package = "proc-macro2-send", git = "https://github.com/Riateche/proc-macro2.git", branch = "send" }
+quote = { package = "quote-send", git = "https://github.com/Riateche/quote.git", branch = "send" }
+syn-send = { path = "../../../", features = ["full"] }

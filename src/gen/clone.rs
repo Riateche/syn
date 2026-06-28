@@ -62,6 +62,7 @@ impl Clone for crate::AssocType {
         }
     }
 }
+
 #[cfg(any(feature = "derive", feature = "full"))]
 #[cfg_attr(docsrs, doc(cfg(feature = "clone-impls")))]
 impl Clone for crate::Attribute {

@@ -95,7 +95,6 @@
 //! obvious default way. These functions can return any syntax tree node that
 //! implements the [`Parse`] trait, which includes most types in Syn.
 //!
-//! [`syn_send::parse`]: crate::parse()
 //! [`syn_send::parse2`]: crate::parse2()
 //! [`syn_send::parse_str`]: crate::parse_str()
 //!

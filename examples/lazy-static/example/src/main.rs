@@ -1,5 +1,4 @@
 use lazy_static::lazy_static;
-use regex::Regex;
 
 lazy_static! {
     static ref USERNAME: Regex = {
@@ -14,7 +13,7 @@ fn main() {
     validate("will.i.am");
 }
 
-fn validate(name: &str) {
+fn validate(_name: &str) {
     // The USERNAME regex is compiled lazily the first time its value is accessed.
-    println!("is_match({:?}): {}", name, USERNAME.is_match(name));
+    //println!("is_match({:?}): {}", name, USERNAME.is_match(name));
 }

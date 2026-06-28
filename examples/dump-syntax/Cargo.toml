@@ -7,10 +7,9 @@ publish = false
 
 [dependencies]
 colored = "3"
-proc-macro2 = { version = "1", features = ["span-locations"] }
+proc-macro2 = { package = "proc-macro2-send", git = "https://github.com/Riateche/proc-macro2.git", branch = "send", features = ["span-locations"] }
 
-[dependencies.syn]
-package = "syn-send"
+[dependencies.syn-send]
 default-features = false
 features = ["extra-traits", "full", "parsing"]
 path = "../.."

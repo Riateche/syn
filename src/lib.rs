@@ -891,11 +891,7 @@ use alloc::string::ToString;
 ///
 /// This function parses a `proc_macro2::TokenStream` which is commonly useful
 /// when the input comes from a node of the Syn syntax tree, for example the
-/// body tokens of a [`Macro`] node. When in a procedural macro parsing the
-/// `proc_macro::TokenStream` provided by the compiler, use [`syn_send::parse`]
-/// instead.
-///
-/// [`syn_send::parse`]: parse()
+/// body tokens of a [`Macro`] node.
 ///
 /// This function enforces that the input is fully parsed. If there are any
 /// unparsed tokens at the end of the stream, an error is returned.

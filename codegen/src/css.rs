@@ -9,7 +9,7 @@ use syn_codegen::Definitions;
 pub fn generate(defs: &Definitions) -> Result<()> {
     let mut styles = String::new();
     for ty in defs.tokens.keys() {
-        styles += &format!("a.struct[title=\"struct syn_send::token::{ty}\"],\n");
+        styles += &format!("a.struct[title=\"struct syn::token::{ty}\"],\n");
     }
     styles.truncate(styles.len() - 2);
     styles += indoc! {"
@@ -21,7 +21,7 @@ pub fn generate(defs: &Definitions) -> Result<()> {
     "};
     styles.push('\n');
     for ty in defs.tokens.keys() {
-        styles += &format!("a.struct[title=\"struct syn_send::token::{ty}\"]::before,\n");
+        styles += &format!("a.struct[title=\"struct syn::token::{ty}\"]::before,\n");
     }
     styles.truncate(styles.len() - 2);
     styles += indoc! {"
@@ -44,7 +44,7 @@ pub fn generate(defs: &Definitions) -> Result<()> {
                     .or_insert_with(Vec::new)
                     .push(ty);
                 formatdoc! {"
-                    a.struct[title=\"struct syn_send::token::{ty}\"]::before {{
+                    a.struct[title=\"struct syn::token::{ty}\"]::before {{
                     \tcontent: \"Token![{repr}]\";
                     \tfont-size: calc(100% * {ty_len} / {macro_len});
                     }}
@@ -55,7 +55,7 @@ pub fn generate(defs: &Definitions) -> Result<()> {
                 let padding = macro_len.saturating_sub(ty.len());
                 grow.entry(padding).or_insert_with(Vec::new).push(ty);
                 formatdoc! {"
-                    a.struct[title=\"struct syn_send::token::{ty}\"]::before {{
+                    a.struct[title=\"struct syn::token::{ty}\"]::before {{
                     \tcontent: \"Token![{repr}]\";
                     }}
                 "}
@@ -64,7 +64,7 @@ pub fn generate(defs: &Definitions) -> Result<()> {
     }
     for ((macro_len, ty_len), types) in shrink {
         for ty in types {
-            styles += &format!("\na.struct[title=\"struct syn_send::token::{ty}\"],");
+            styles += &format!("\na.struct[title=\"struct syn::token::{ty}\"],");
         }
         styles.truncate(styles.len() - 1);
         styles += &formatdoc! {"
@@ -75,7 +75,7 @@ pub fn generate(defs: &Definitions) -> Result<()> {
     }
     for (padding, types) in grow {
         for ty in types {
-            styles += &format!("\na.struct[title=\"struct syn_send::token::{ty}\"]::after,");
+            styles += &format!("\na.struct[title=\"struct syn::token::{ty}\"]::after,");
         }
         styles.truncate(styles.len() - 1);
         let padding = ".".repeat(padding);

@@ -6,8 +6,8 @@ use std::collections::BTreeMap;
 use std::fmt::{self, Display};
 use std::fs;
 use std::path::{Path, PathBuf};
-use syn_send::parse::{Error, Parser};
-use syn_send::{
+use syn::parse::{Error, Parser};
+use syn::{
     parse_quote, Attribute, Data, DataEnum, DataStruct, DeriveInput, Fields, GenericArgument,
     Ident, Item, PathArguments, TypeMacro, TypePath, TypeTuple, UseTree, Visibility,
 };
@@ -130,9 +130,9 @@ fn introspect_struct(item: &DataStruct, lookup: &Lookup) -> types::Fields {
     }
 }
 
-fn introspect_type(item: &syn_send::Type, lookup: &Lookup) -> types::Type {
+fn introspect_type(item: &syn::Type, lookup: &Lookup) -> types::Type {
     match item {
-        syn_send::Type::Path(TypePath { qself: None, path }) => {
+        syn::Type::Path(TypePath { qself: None, path }) => {
             let last = path.segments.last().unwrap();
             let string = last.ident.to_string();
 
@@ -177,11 +177,11 @@ fn introspect_type(item: &syn_send::Type, lookup: &Lookup) -> types::Type {
                 }
             }
         }
-        syn_send::Type::Tuple(TypeTuple { elems, .. }) => {
+        syn::Type::Tuple(TypeTuple { elems, .. }) => {
             let tys = elems.iter().map(|ty| introspect_type(ty, lookup)).collect();
             types::Type::Tuple(tys)
         }
-        syn_send::Type::Macro(TypeMacro { mac })
+        syn::Type::Macro(TypeMacro { mac })
             if mac.path.segments.last().unwrap().ident == "Token" =>
         {
             let content = mac.tokens.to_string();
@@ -241,7 +241,7 @@ fn is_doc_hidden(attrs: &[Attribute]) -> bool {
     false
 }
 
-fn first_arg(params: &PathArguments) -> &syn_send::Type {
+fn first_arg(params: &PathArguments) -> &syn::Type {
     let data = match params {
         PathArguments::AngleBracketed(data) => data,
         _ => panic!("expected at least 1 type argument here"),
@@ -257,7 +257,7 @@ fn first_arg(params: &PathArguments) -> &syn_send::Type {
     }
 }
 
-fn last_arg(params: &PathArguments) -> &syn_send::Type {
+fn last_arg(params: &PathArguments) -> &syn::Type {
     let data = match params {
         PathArguments::AngleBracketed(data) => data,
         _ => panic!("expected at least 1 type argument here"),
@@ -278,8 +278,8 @@ mod parsing {
     use proc_macro2::TokenStream;
     use quote::quote;
     use std::collections::{BTreeMap, BTreeSet};
-    use syn_send::parse::{ParseStream, Result};
-    use syn_send::{
+    use syn::parse::{ParseStream, Result};
+    use syn::{
         braced, bracketed, parenthesized, parse_quote, token, Attribute, Expr, Ident, Lit, LitStr,
         Path, Token,
     };
@@ -310,7 +310,7 @@ mod parsing {
         let features = full(input);
         let rest: TokenStream = input.parse()?;
         Ok(AstItem {
-            ast: syn_send::parse2(quote! {
+            ast: syn::parse2(quote! {
                 #(#attrs)*
                 pub struct #ident #rest
             })?,
@@ -325,7 +325,7 @@ mod parsing {
         let ident: Ident = input.parse()?;
         let rest: TokenStream = input.parse()?;
         Ok(AstItem {
-            ast: syn_send::parse2(quote! {
+            ast: syn::parse2(quote! {
                 #(#attrs)*
                 pub enum #ident #rest
             })?,
@@ -395,9 +395,9 @@ mod parsing {
     }
 
     pub mod kw {
-        syn_send::custom_keyword!(hidden);
-        syn_send::custom_keyword!(macro_rules);
-        syn_send::custom_keyword!(Token);
+        syn::custom_keyword!(hidden);
+        syn::custom_keyword!(macro_rules);
+        syn::custom_keyword!(Token);
     }
 
     pub fn parse_token_macro(input: ParseStream) -> Result<BTreeMap<String, String>> {
@@ -540,7 +540,7 @@ fn do_load_file(
 
     // Parse the file
     let src = fs::read_to_string(workspace_path::get(relative_to_workspace_root))?;
-    let file = syn_send::parse_file(&src)?;
+    let file = syn::parse_file(&src)?;
 
     // Collect all of the interesting AstItems declared in this file or submodules.
     'items: for item in file.items {
@@ -655,7 +655,7 @@ fn load_token_file(
 ) -> Result<BTreeMap<String, String>> {
     let path = workspace_path::get(relative_to_workspace_root);
     let src = fs::read_to_string(path)?;
-    let file = syn_send::parse_file(&src)?;
+    let file = syn::parse_file(&src)?;
     for item in file.items {
         if let Item::Macro(item) = item {
             match item.ident {

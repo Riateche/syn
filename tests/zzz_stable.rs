@@ -22,11 +22,11 @@ fn notice() -> io::Result<()> {
 
     let mut stderr = StandardStream::stderr(ColorChoice::Auto);
     stderr.set_color(ColorSpec::new().set_fg(Some(Color::Yellow)))?;
-    write!(&mut stderr, "{}", before)?;
+    write!(&mut stderr, "{before}")?;
     stderr.set_color(ColorSpec::new().set_bold(true).set_fg(Some(Color::Yellow)))?;
-    write!(&mut stderr, "{}", header)?;
+    write!(&mut stderr, "{header}")?;
     stderr.set_color(ColorSpec::new().set_fg(Some(Color::Yellow)))?;
-    write!(&mut stderr, "{}", after)?;
+    write!(&mut stderr, "{after}")?;
     stderr.reset()?;
 
     Ok(())

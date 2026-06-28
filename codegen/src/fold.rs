@@ -3,7 +3,7 @@ use crate::{file, full, gen};
 use anyhow::Result;
 use proc_macro2::{Ident, Span, TokenStream};
 use quote::{format_ident, quote};
-use syn_send::Index;
+use syn::Index;
 use syn_codegen::{Data, Definitions, Features, Node, Type};
 
 const FOLD_SRC: &str = "src/gen/fold.rs";

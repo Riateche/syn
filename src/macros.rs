@@ -15,6 +15,7 @@ macro_rules! ast_struct {
         $(#[$attr])* $pub $struct $name $body
 
         #[cfg(not(feature = "full"))]
+        #[cfg_attr(feature = "serde", derive(serde::Serialize, serde::Deserialize))]
         $(#[$attr])* $pub $struct $name {
             _noconstruct: ::core::marker::PhantomData<::proc_macro2::Span>,
         }

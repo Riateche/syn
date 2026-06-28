@@ -214,12 +214,12 @@ impl<'a> Iterator for Members<'a> {
             Some(ident) => Member::Named(ident.clone()),
             None => {
                 #[cfg(all(feature = "parsing", feature = "printing"))]
-                let span = crate::spanned::Spanned::span(&field.ty);
+                let span = crate::spanned::Spanned::span(&field.ty).into_owned();
                 #[cfg(not(all(feature = "parsing", feature = "printing")))]
                 let span = proc_macro2::Span::call_site();
                 Member::Unnamed(Index {
                     index: self.index,
-                    span: span.into_owned(),
+                    span,
                 })
             }
         };

@@ -1,36 +1,36 @@
+#![allow(dead_code)]
+
 use proc_macro2::TokenStream;
 use quote::{quote, quote_spanned};
 use syn_send::spanned::Spanned;
-use syn_send::{
-    parse_macro_input, parse_quote, Data, DeriveInput, Fields, GenericParam, Generics, Index,
-};
+use syn_send::{parse_quote, Data, Fields, GenericParam, Generics, Index};
 
 #[proc_macro_derive(HeapSize)]
-pub fn derive_heap_size(input: proc_macro::TokenStream) -> proc_macro::TokenStream {
-    // Parse the input tokens into a syntax tree.
-    let input = parse_macro_input!(input as DeriveInput);
+pub fn derive_heap_size(_input: proc_macro::TokenStream) -> proc_macro::TokenStream {
+    // // Parse the input tokens into a syntax tree.
+    // let input = if parse_macro_input!(input as DeriveInput);
 
-    // Used in the quasi-quotation below as `#name`.
-    let name = input.ident;
+    // // Used in the quasi-quotation below as `#name`.
+    // let name = input.ident;
 
-    // Add a bound `T: HeapSize` to every type parameter T.
-    let generics = add_trait_bounds(input.generics);
-    let (impl_generics, ty_generics, where_clause) = generics.split_for_impl();
+    // // Add a bound `T: HeapSize` to every type parameter T.
+    // let generics = add_trait_bounds(input.generics);
+    // let (impl_generics, ty_generics, where_clause) = generics.split_for_impl();
 
-    // Generate an expression to sum up the heap size of each field.
-    let sum = heap_size_sum(&input.data);
+    // // Generate an expression to sum up the heap size of each field.
+    // let sum = heap_size_sum(&input.data);
 
-    let expanded = quote! {
-        // The generated impl.
-        impl #impl_generics heapsize::HeapSize for #name #ty_generics #where_clause {
-            fn heap_size_of_children(&self) -> usize {
-                #sum
-            }
-        }
-    };
+    // let expanded = quote! {
+    //     // The generated impl.
+    //     impl #impl_generics heapsize::HeapSize for #name #ty_generics #where_clause {
+    //         fn heap_size_of_children(&self) -> usize {
+    //             #sum
+    //         }
+    //     }
+    // };
 
     // Hand the output tokens back to the compiler.
-    proc_macro::TokenStream::from(expanded)
+    proc_macro::TokenStream::new()
 }
 
 // Add a bound `T: HeapSize` to every type parameter T.
@@ -63,7 +63,8 @@ fn heap_size_sum(data: &Data) -> TokenStream {
                     // readme of the parent directory.
                     let recurse = fields.named.iter().map(|f| {
                         let name = &f.ident;
-                        quote_spanned! {f.span()=>
+                        let span = f.span().into_owned();
+                        quote_spanned! {span=>
                             heapsize::HeapSize::heap_size_of_children(&self.#name)
                         }
                     });
@@ -77,7 +78,8 @@ fn heap_size_sum(data: &Data) -> TokenStream {
                     //     0 + self.0.heap_size() + self.1.heap_size() + self.2.heap_size()
                     let recurse = fields.unnamed.iter().enumerate().map(|(i, f)| {
                         let index = Index::from(i);
-                        quote_spanned! {f.span()=>
+                        let span = f.span().into_owned();
+                        quote_spanned! {span=>
                             heapsize::HeapSize::heap_size_of_children(&self.#index)
                         }
                     });

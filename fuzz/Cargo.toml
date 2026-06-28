@@ -10,8 +10,8 @@ cargo-fuzz = true
 
 [dependencies]
 libfuzzer-sys = "0.4"
-proc-macro2 = "1.0.52"
-syn = { package = "syn-send", path = "..", default-features = false, features = ["full", "parsing"] }
+proc-macro2 = { package = "proc-macro2-send", git = "https://github.com/Riateche/proc-macro2.git", branch = "send" }
+syn-send = { path = "..", default-features = false, features = ["full", "parsing"] }
 
 [features]
 span-locations = ["proc-macro2/span-locations"]

@@ -148,7 +148,12 @@ macro_rules! impl_parse_for_custom_keyword {
                 input.step(|cursor| {
                     if let $crate::__private::Some((ident, rest)) = cursor.ident() {
                         if ident == $crate::__private::stringify!($ident) {
-                            return $crate::__private::Ok(($ident { span: ident.span() }, rest));
+                            return $crate::__private::Ok((
+                                $ident {
+                                    span: ident.span().clone(),
+                                },
+                                rest,
+                            ));
                         }
                     }
                     $crate::__private::Err(cursor.error($crate::__private::concat!(
@@ -178,7 +183,8 @@ macro_rules! impl_to_tokens_for_custom_keyword {
     ($ident:ident) => {
         impl $crate::__private::ToTokens for $ident {
             fn to_tokens(&self, tokens: &mut $crate::__private::TokenStream2) {
-                let ident = $crate::Ident::new($crate::__private::stringify!($ident), self.span);
+                let ident =
+                    $crate::Ident::new($crate::__private::stringify!($ident), self.span.clone());
                 $crate::__private::TokenStreamExt::append(tokens, ident);
             }
         }
@@ -199,8 +205,6 @@ macro_rules! impl_to_tokens_for_custom_keyword {
 #[macro_export]
 macro_rules! impl_clone_for_custom_keyword {
     ($ident:ident) => {
-        impl $crate::__private::Copy for $ident {}
-
         #[allow(clippy::expl_impl_clone_on_copy)]
         impl $crate::__private::Clone for $ident {
             fn clone(&self) -> Self {

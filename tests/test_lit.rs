@@ -268,14 +268,20 @@ fn floats() {
 #[test]
 fn negative() {
     let span = Span::call_site();
-    assert_eq!("-1", LitInt::new("-1", span).to_string());
-    assert_eq!("-1i8", LitInt::new("-1i8", span).to_string());
-    assert_eq!("-1i16", LitInt::new("-1i16", span).to_string());
-    assert_eq!("-1i32", LitInt::new("-1i32", span).to_string());
-    assert_eq!("-1i64", LitInt::new("-1i64", span).to_string());
-    assert_eq!("-1.5", LitFloat::new("-1.5", span).to_string());
-    assert_eq!("-1.5f32", LitFloat::new("-1.5f32", span).to_string());
-    assert_eq!("-1.5f64", LitFloat::new("-1.5f64", span).to_string());
+    assert_eq!("-1", LitInt::new("-1", span.clone()).to_string());
+    assert_eq!("-1i8", LitInt::new("-1i8", span.clone()).to_string());
+    assert_eq!("-1i16", LitInt::new("-1i16", span.clone()).to_string());
+    assert_eq!("-1i32", LitInt::new("-1i32", span.clone()).to_string());
+    assert_eq!("-1i64", LitInt::new("-1i64", span.clone()).to_string());
+    assert_eq!("-1.5", LitFloat::new("-1.5", span.clone()).to_string());
+    assert_eq!(
+        "-1.5f32",
+        LitFloat::new("-1.5f32", span.clone()).to_string()
+    );
+    assert_eq!(
+        "-1.5f64",
+        LitFloat::new("-1.5f64", span.clone()).to_string()
+    );
 }
 
 #[test]

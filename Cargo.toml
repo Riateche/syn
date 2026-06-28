@@ -36,7 +36,7 @@ test = ["syn-test-suite/all-features"]
 serde = ["dep:serde", "proc-macro2/serde"]
 
 [dependencies]
-proc-macro2 = { package = "proc-macro2-send", git = "https://github.com/Riateche/proc-macro2.git", branch = "send", default-features = false }
+proc-macro2 = { package = "proc-macro2-send", git = "https://github.com/Riateche/proc-macro2.git", branch = "send" }
 
 quote = { package = "quote-send", git = "https://github.com/Riateche/quote.git", branch = "send", optional = true, default-features = false }
 unicode-ident = "1"

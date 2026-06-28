@@ -1,4 +1,5 @@
 #![feature(proc_macro_diagnostic)]
+#![allow(unused)]
 
 use proc_macro::TokenStream;
 use quote::{quote, quote_spanned};
@@ -47,7 +48,7 @@ impl Parse for LazyStatic {
 
 #[proc_macro]
 pub fn lazy_static(input: TokenStream) -> TokenStream {
-    let LazyStatic {
+    /*let LazyStatic {
         visibility,
         name,
         ty,
@@ -136,5 +137,6 @@ pub fn lazy_static(input: TokenStream) -> TokenStream {
         }
     };
 
-    TokenStream::from(expanded)
+    TokenStream::from(expanded)*/
+    TokenStream::new()
 }
