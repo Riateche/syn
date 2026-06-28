@@ -15,6 +15,7 @@ use proc_macro2::{Ident, Span};
 ///   the XID_Start property.
 /// - All following characters must be Unicode code points with the XID_Continue
 ///   property.
+#[cfg_attr(feature = "serde", derive(serde::Serialize, serde::Deserialize))]
 pub struct Lifetime {
     pub apostrophe: Span,
     pub ident: Ident,

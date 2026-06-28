@@ -96,6 +96,7 @@ ast_struct! {
     }
 }
 
+#[cfg_attr(feature = "serde", derive(serde::Serialize, serde::Deserialize))]
 struct LitRepr {
     token: Literal,
     suffix: Box<str>,
@@ -108,6 +109,7 @@ ast_struct! {
     }
 }
 
+#[cfg_attr(feature = "serde", derive(serde::Serialize, serde::Deserialize))]
 struct LitIntRepr {
     token: Literal,
     digits: Box<str>,
@@ -123,6 +125,7 @@ ast_struct! {
     }
 }
 
+#[cfg_attr(feature = "serde", derive(serde::Serialize, serde::Deserialize))]
 struct LitFloatRepr {
     token: Literal,
     digits: Box<str>,

@@ -11,6 +11,7 @@ macro_rules! ast_struct {
         check_keyword_matches!(struct $struct);
 
         #[cfg(feature = "full")]
+        #[cfg_attr(feature = "serde", derive(serde::Serialize, serde::Deserialize))]
         $(#[$attr])* $pub $struct $name $body
 
         #[cfg(not(feature = "full"))]
@@ -33,6 +34,7 @@ macro_rules! ast_struct {
         check_keyword_matches!(pub $pub);
         check_keyword_matches!(struct $struct);
 
+        #[cfg_attr(feature = "serde", derive(serde::Serialize, serde::Deserialize))]
         $(#[$attr])* $pub $struct $name $body
     };
 }
@@ -46,6 +48,7 @@ macro_rules! ast_enum {
         check_keyword_matches!(pub $pub);
         check_keyword_matches!(enum $enum);
 
+        #[cfg_attr(feature = "serde", derive(serde::Serialize, serde::Deserialize))]
         $(#[$enum_attr])* $pub $enum $name $body
     };
 }
@@ -58,6 +61,7 @@ macro_rules! ast_enum_of_structs {
         check_keyword_matches!(pub $pub);
         check_keyword_matches!(enum $enum);
 
+        #[cfg_attr(feature = "serde", derive(serde::Serialize, serde::Deserialize))]
         $(#[$enum_attr])* $pub $enum $name $body
 
         ast_enum_of_structs_impl!($name $body);

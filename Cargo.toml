@@ -33,12 +33,15 @@ clone-impls = []
 extra-traits = []
 proc-macro = ["proc-macro2/proc-macro", "quote?/proc-macro"]
 test = ["syn-test-suite/all-features"]
+serde = ["dep:serde", "proc-macro2/serde"]
 
 [dependencies]
 proc-macro2 = { package = "proc-macro2-send", git = "https://github.com/Riateche/proc-macro2.git", branch = "send", default-features = false }
 
 quote = { package = "quote-send", git = "https://github.com/Riateche/quote.git", branch = "send", optional = true, default-features = false }
 unicode-ident = "1"
+
+serde = { version = "1.0.228", features = ["derive"], optional = true }
 
 [dev-dependencies]
 anyhow = "1"

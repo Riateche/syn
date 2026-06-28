@@ -207,6 +207,7 @@ macro_rules! define_keywords {
             /// [`Token!`] macro instead.
             ///
             /// [`Token!`]: crate::token
+            #[cfg_attr(feature = "serde", derive(serde::Serialize, serde::Deserialize))]
             pub struct $name {
                 pub span: Span,
             }
@@ -334,6 +335,7 @@ macro_rules! define_punctuation_structs {
             /// [`Token!`] macro instead.
             ///
             /// [`Token!`]: crate::token
+            #[cfg_attr(feature = "serde", derive(serde::Serialize, serde::Deserialize))]
             pub struct $name {
                 pub spans: [Span; $len],
             }
@@ -443,6 +445,7 @@ macro_rules! define_delimiters {
     ($($delim:ident pub struct $name:ident #[$doc:meta])*) => {
         $(
             #[$doc]
+            #[cfg_attr(feature = "serde", derive(serde::Serialize, serde::Deserialize))]
             pub struct $name {
                 pub span: DelimSpan,
             }
@@ -571,6 +574,7 @@ impl Token for Underscore {
 impl private::Sealed for Underscore {}
 
 /// None-delimited group
+#[cfg_attr(feature = "serde", derive(serde::Serialize, serde::Deserialize))]
 pub struct Group {
     pub span: Span,
 }

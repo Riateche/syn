@@ -47,6 +47,7 @@ use core::slice;
 /// Refer to the [module documentation] for details about punctuated sequences.
 ///
 /// [module documentation]: self
+#[cfg_attr(feature = "serde", derive(serde::Serialize, serde::Deserialize))]
 pub struct Punctuated<T, P> {
     inner: Vec<(T, P)>,
     last: Option<Box<T>>,
