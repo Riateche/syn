@@ -13,7 +13,7 @@
 //! [`ItemStatic`]: crate::ItemStatic
 //!
 //! ```
-//! # use syn::{Attribute, Expr, Ident, Token, Type, Visibility};
+//! # use syn_send::{Attribute, Expr, Ident, Token, Type, Visibility};
 //! #
 //! pub struct ItemStatic {
 //!     pub attrs: Vec<Attribute>,
@@ -41,15 +41,15 @@
 //! [`braced!`]: crate::braced!
 //!
 //! ```
-//! use syn::{Attribute, Result};
-//! use syn::parse::{Parse, ParseStream};
+//! use syn_send::{Attribute, Result};
+//! use syn_send::parse::{Parse, ParseStream};
 //! #
 //! # enum ItemStatic {}
 //!
 //! // Parse the ItemStatic struct shown above.
 //! impl Parse for ItemStatic {
 //!     fn parse(input: ParseStream) -> Result<Self> {
-//!         # use syn::ItemStatic;
+//!         # use syn_send::ItemStatic;
 //!         # fn parse(input: ParseStream) -> Result<ItemStatic> {
 //!         Ok(ItemStatic {
 //!             attrs: input.call(Attribute::parse_outer)?,
@@ -208,6 +208,7 @@ macro_rules! define_keywords {
             ///
             /// [`Token!`]: crate::token
             #[cfg_attr(feature = "serde", derive(serde::Serialize, serde::Deserialize))]
+            #[cfg_attr(feature = "clone-impls", derive(Clone))]
             pub struct $name {
                 pub span: Span,
             }
@@ -225,18 +226,6 @@ macro_rules! define_keywords {
                     $name {
                         span: Span::call_site(),
                     }
-                }
-            }
-
-            #[cfg(feature = "clone-impls")]
-            #[cfg_attr(docsrs, doc(cfg(feature = "clone-impls")))]
-            impl Copy for $name {}
-
-            #[cfg(feature = "clone-impls")]
-            #[cfg_attr(docsrs, doc(cfg(feature = "clone-impls")))]
-            impl Clone for $name {
-                fn clone(&self) -> Self {
-                    *self
                 }
             }
 
@@ -270,7 +259,7 @@ macro_rules! define_keywords {
             #[cfg_attr(docsrs, doc(cfg(feature = "printing")))]
             impl ToTokens for $name {
                 fn to_tokens(&self, tokens: &mut TokenStream) {
-                    printing::keyword($token, self.span, tokens);
+                    printing::keyword($token, self.span.clone(), tokens);
                 }
             }
 
@@ -336,6 +325,7 @@ macro_rules! define_punctuation_structs {
             ///
             /// [`Token!`]: crate::token
             #[cfg_attr(feature = "serde", derive(serde::Serialize, serde::Deserialize))]
+            #[cfg_attr(feature = "clone-impls", derive(Clone))]
             pub struct $name {
                 pub spans: [Span; $len],
             }
@@ -351,20 +341,8 @@ macro_rules! define_punctuation_structs {
             impl core::default::Default for $name {
                 fn default() -> Self {
                     $name {
-                        spans: [Span::call_site(); $len],
+                        spans: ::std::array::from_fn(|_| Span::call_site()),
                     }
-                }
-            }
-
-            #[cfg(feature = "clone-impls")]
-            #[cfg_attr(docsrs, doc(cfg(feature = "clone-impls")))]
-            impl Copy for $name {}
-
-            #[cfg(feature = "clone-impls")]
-            #[cfg_attr(docsrs, doc(cfg(feature = "clone-impls")))]
-            impl Clone for $name {
-                fn clone(&self) -> Self {
-                    *self
                 }
             }
 
@@ -446,6 +424,7 @@ macro_rules! define_delimiters {
         $(
             #[$doc]
             #[cfg_attr(feature = "serde", derive(serde::Serialize, serde::Deserialize))]
+            #[cfg_attr(feature = "clone-impls", derive(Clone))]
             pub struct $name {
                 pub span: DelimSpan,
             }
@@ -461,18 +440,6 @@ macro_rules! define_delimiters {
             impl core::default::Default for $name {
                 fn default() -> Self {
                     $name(Span::call_site())
-                }
-            }
-
-            #[cfg(feature = "clone-impls")]
-            #[cfg_attr(docsrs, doc(cfg(feature = "clone-impls")))]
-            impl Copy for $name {}
-
-            #[cfg(feature = "clone-impls")]
-            #[cfg_attr(docsrs, doc(cfg(feature = "clone-impls")))]
-            impl Clone for $name {
-                fn clone(&self) -> Self {
-                    *self
                 }
             }
 
@@ -511,7 +478,7 @@ macro_rules! define_delimiters {
                 {
                     let mut inner = TokenStream::new();
                     f(&mut inner);
-                    printing::delim(Delimiter::$delim, self.span.join(), tokens, inner);
+                    printing::delim(Delimiter::$delim, self.span.join().clone(), tokens, inner);
                 }
             }
 
@@ -529,7 +496,7 @@ define_punctuation_structs! {
 #[cfg_attr(docsrs, doc(cfg(feature = "printing")))]
 impl ToTokens for Underscore {
     fn to_tokens(&self, tokens: &mut TokenStream) {
-        tokens.append(Ident::new("_", self.span));
+        tokens.append(Ident::new("_", self.span.clone()));
     }
 }
 
@@ -540,12 +507,12 @@ impl Parse for Underscore {
         input.step(|cursor| {
             if let Some((ident, rest)) = cursor.ident() {
                 if ident == "_" {
-                    return Ok((Underscore(ident.span()), rest));
+                    return Ok((Underscore(ident.span().clone()), rest));
                 }
             }
             if let Some((punct, rest)) = cursor.punct() {
                 if punct.as_char() == '_' {
-                    return Ok((Underscore(punct.span()), rest));
+                    return Ok((Underscore(punct.span().clone()), rest));
                 }
             }
             Err(cursor.error("expected `_`"))
@@ -575,6 +542,7 @@ impl private::Sealed for Underscore {}
 
 /// None-delimited group
 #[cfg_attr(feature = "serde", derive(serde::Serialize, serde::Deserialize))]
+#[cfg_attr(feature = "clone-impls", derive(Clone))]
 pub struct Group {
     pub span: Span,
 }
@@ -592,18 +560,6 @@ impl core::default::Default for Group {
         Group {
             span: Span::call_site(),
         }
-    }
-}
-
-#[cfg(feature = "clone-impls")]
-#[cfg_attr(docsrs, doc(cfg(feature = "clone-impls")))]
-impl Copy for Group {}
-
-#[cfg(feature = "clone-impls")]
-#[cfg_attr(docsrs, doc(cfg(feature = "clone-impls")))]
-impl Clone for Group {
-    fn clone(&self) -> Self {
-        *self
     }
 }
 
@@ -642,7 +598,7 @@ impl Group {
     {
         let mut inner = TokenStream::new();
         f(&mut inner);
-        printing::delim(Delimiter::None, self.span, tokens, inner);
+        printing::delim(Delimiter::None, self.span.clone(), tokens, inner);
     }
 }
 
@@ -811,8 +767,8 @@ define_delimiters! {
 /// of a `let` statement, or in turbofish for a `parse` function.
 ///
 /// ```
-/// use syn::{Ident, Token};
-/// use syn::parse::{Parse, ParseStream, Result};
+/// use syn_send::{Ident, Token};
+/// use syn_send::parse::{Parse, ParseStream, Result};
 ///
 /// // `struct Foo;`
 /// pub struct UnitStruct {
@@ -835,8 +791,8 @@ define_delimiters! {
 /// tokens from a span.
 ///
 /// ```
-/// # use syn::{Ident, Token};
-/// # use syn::parse::{Parse, ParseStream, Result};
+/// # use syn_send::{Ident, Token};
+/// # use syn_send::parse::{Parse, ParseStream, Result};
 /// #
 /// # struct UnitStruct {
 /// #     struct_token: Token![struct],
@@ -989,7 +945,7 @@ pub(crate) mod parsing {
         input.step(|cursor| {
             if let Some((ident, rest)) = cursor.ident() {
                 if ident == token {
-                    return Ok((ident.span(), rest));
+                    return Ok((ident.span().clone(), rest));
                 }
             }
             Err(cursor.error(format!("expected `{}`", token)))
@@ -1006,7 +962,7 @@ pub(crate) mod parsing {
 
     #[doc(hidden)]
     pub fn punct<const N: usize>(input: ParseStream, token: &str) -> Result<[Span; N]> {
-        let mut spans = [input.span(); N];
+        let mut spans = std::array::from_fn(|_| input.span().clone());
         punct_helper(input, token, &mut spans)?;
         Ok(spans)
     }
@@ -1019,7 +975,7 @@ pub(crate) mod parsing {
             for (i, ch) in token.chars().enumerate() {
                 match cursor.punct() {
                     Some((punct, rest)) => {
-                        spans[i] = punct.span();
+                        spans[i] = punct.span().clone();
                         if punct.as_char() != ch {
                             break;
                         } else if i == token.len() - 1 {
@@ -1033,7 +989,10 @@ pub(crate) mod parsing {
                 }
             }
 
-            Err(Error::new(spans[0], format!("expected `{}`", token)))
+            Err(Error::new(
+                spans[0].clone(),
+                format!("expected `{}`", token),
+            ))
         })
     }
 
@@ -1075,10 +1034,10 @@ pub(crate) mod printing {
         let ch = chars.next_back().unwrap();
         let span = spans.next_back().unwrap();
         for (ch, span) in chars.zip(spans) {
-            tokens.append(Punct::new_spanned(ch, Spacing::Joint, *span));
+            tokens.append(Punct::new_spanned(ch, Spacing::Joint, span.clone()));
         }
 
-        tokens.append(Punct::new_spanned(ch, Spacing::Alone, *span));
+        tokens.append(Punct::new_spanned(ch, Spacing::Alone, span.clone()));
     }
 
     pub(crate) fn keyword(s: &str, span: Span, tokens: &mut TokenStream) {

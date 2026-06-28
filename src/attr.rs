@@ -94,8 +94,8 @@ ast_struct! {
     /// [`ParseStream::call`]: crate::parse::ParseBuffer::call
     ///
     /// ```
-    /// use syn::{Attribute, Ident, Result, Token};
-    /// use syn::parse::{Parse, ParseStream};
+    /// use syn_send::{Attribute, Ident, Result, Token};
+    /// use syn_send::parse::{Parse, ParseStream};
     ///
     /// // Parses a unit struct with attributes.
     /// //
@@ -146,7 +146,7 @@ ast_struct! {
     /// As an example, the following `mod` items are expanded identically:
     ///
     /// ```
-    /// # use syn::{ItemMod, parse_quote};
+    /// # use syn_send::{ItemMod, parse_quote};
     /// let doc: ItemMod = parse_quote! {
     ///     /// Single line doc comments
     ///     /// We write so many!
@@ -194,7 +194,7 @@ impl Attribute {
     /// Parse the arguments to the attribute as a syntax tree.
     ///
     /// This is similar to pulling out the `TokenStream` from `Meta::List` and
-    /// doing `syn::parse2::<T>(meta_list.tokens)`, except that using
+    /// doing `syn_send::parse2::<T>(meta_list.tokens)`, except that using
     /// `parse_args` the error message has a more useful span when `tokens` is
     /// empty.
     ///
@@ -209,7 +209,7 @@ impl Attribute {
     /// # Example
     ///
     /// ```
-    /// use syn::{parse_quote, Attribute, Expr};
+    /// use syn_send::{parse_quote, Attribute, Expr};
     ///
     /// let attr: Attribute = parse_quote! {
     ///     #[precondition(value < 5)]
@@ -232,7 +232,7 @@ impl Attribute {
     /// # Example
     ///
     /// ```
-    /// use syn::{parse_quote, Attribute};
+    /// use syn_send::{parse_quote, Attribute};
     ///
     /// let attr: Attribute = parse_quote! {
     ///     #[inception { #[brrrrrrraaaaawwwwrwrrrmrmrmmrmrmmmmm] }]
@@ -249,8 +249,8 @@ impl Attribute {
     pub fn parse_args_with<F: Parser>(&self, parser: F) -> Result<F::Output> {
         match &self.meta {
             Meta::Path(path) => Err(crate::error::new2(
-                path.segments.first().unwrap().ident.span(),
-                path.segments.last().unwrap().ident.span(),
+                path.segments.first().unwrap().ident.span().clone(),
+                path.segments.last().unwrap().ident.span().clone(),
                 format!(
                     "expected attribute arguments in parentheses: {}[{}(...)]",
                     parsing::DisplayAttrStyle(&self.style),
@@ -258,7 +258,7 @@ impl Attribute {
                 ),
             )),
             Meta::NameValue(meta) => Err(Error::new(
-                meta.eq_token.span,
+                meta.eq_token.span.clone(),
                 format_args!(
                     "expected parentheses: {}[{}(...)]",
                     parsing::DisplayAttrStyle(&self.style),
@@ -285,7 +285,7 @@ impl Attribute {
     /// syntax.
     ///
     /// ```
-    /// use syn::{parenthesized, parse_quote, token, ItemStruct, LitInt};
+    /// use syn_send::{parenthesized, parse_quote, token, ItemStruct, LitInt};
     ///
     /// let input: ItemStruct = parse_quote! {
     ///     #[repr(C, align(4))]
@@ -348,15 +348,15 @@ impl Attribute {
     /// content, the following less flexible approach might be more convenient:
     ///
     /// ```
-    /// # use syn::{parse_quote, ItemStruct};
+    /// # use syn_send::{parse_quote, ItemStruct};
     /// #
     /// # let input: ItemStruct = parse_quote! {
     /// #     #[repr(C, align(4))]
     /// #     pub struct MyStruct(u16, u32);
     /// # };
     /// #
-    /// use syn::punctuated::Punctuated;
-    /// use syn::{parenthesized, token, Error, LitInt, Meta, Token};
+    /// use syn_send::punctuated::Punctuated;
+    /// use syn_send::{parenthesized, token, Error, LitInt, Meta, Token};
     ///
     /// let mut repr_c = false;
     /// let mut repr_transparent = false;
@@ -446,6 +446,7 @@ ast_enum! {
     /// - `//! # Example`
     /// - `/*! Please file an issue */`
     #[cfg_attr(docsrs, doc(cfg(any(feature = "full", feature = "derive"))))]
+    #[cfg_attr(feature = "clone-impls", derive(Clone))]
     pub enum AttrStyle {
         Outer,
         Inner(Token![!]),
@@ -525,7 +526,7 @@ impl Meta {
         let error_span = match self {
             Meta::Path(path) => return Ok(path),
             Meta::List(meta) => meta.delimiter.span().open(),
-            Meta::NameValue(meta) => meta.eq_token.span,
+            Meta::NameValue(meta) => meta.eq_token.span.clone(),
         };
         Err(Error::new(error_span, "unexpected token in attribute"))
     }
@@ -537,14 +538,14 @@ impl Meta {
         match self {
             Meta::List(meta) => Ok(meta),
             Meta::Path(path) => Err(crate::error::new2(
-                path.segments.first().unwrap().ident.span(),
-                path.segments.last().unwrap().ident.span(),
+                path.segments.first().unwrap().ident.span().clone(),
+                path.segments.last().unwrap().ident.span().clone(),
                 format!(
                     "expected attribute arguments in parentheses: `{}(...)`",
                     parsing::DisplayPath(path),
                 ),
             )),
-            Meta::NameValue(meta) => Err(Error::new(meta.eq_token.span, "expected `(`")),
+            Meta::NameValue(meta) => Err(Error::new(meta.eq_token.span.clone(), "expected `(`")),
         }
     }
 
@@ -555,8 +556,8 @@ impl Meta {
         match self {
             Meta::NameValue(meta) => Ok(meta),
             Meta::Path(path) => Err(crate::error::new2(
-                path.segments.first().unwrap().ident.span(),
-                path.segments.last().unwrap().ident.span(),
+                path.segments.first().unwrap().ident.span().clone(),
+                path.segments.last().unwrap().ident.span().clone(),
                 format!(
                     "expected a value for this attribute: `{} = ...`",
                     parsing::DisplayPath(path),

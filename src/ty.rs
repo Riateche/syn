@@ -335,7 +335,7 @@ pub(crate) mod parsing {
                 } else {
                     return Ok(Type::Path(TypePath {
                         qself: Some(QSelf {
-                            lt_token: Token![<](group.group_token.span),
+                            lt_token: Token![<](group.group_token.span.clone()),
                             position: 0,
                             as_token: None,
                             gt_token: Token![>](group.group_token.span),
@@ -569,7 +569,7 @@ pub(crate) mod parsing {
             Ok(Type::Path(ty))
         } else if lookahead.peek(Token![dyn]) {
             let dyn_token: Token![dyn] = input.parse()?;
-            let dyn_span = dyn_token.span;
+            let dyn_span = dyn_token.span.clone();
             let star_token: Option<Token![*]> = input.parse()?;
             let bounds = TypeTraitObject::parse_bounds(dyn_span, input, allow_plus)?;
             Ok(if star_token.is_some() {
@@ -836,7 +836,7 @@ pub(crate) mod parsing {
         pub(crate) fn parse(input: ParseStream, allow_plus: bool) -> Result<Self> {
             let dyn_token: Option<Token![dyn]> = input.parse()?;
             let dyn_span = match &dyn_token {
-                Some(token) => token.span,
+                Some(token) => token.span.clone(),
                 None => input.span(),
             };
             let bounds = Self::parse_bounds(dyn_span, input, allow_plus)?;
@@ -875,7 +875,11 @@ pub(crate) mod parsing {
             // Just lifetimes like `'a + 'b` is not a TraitObject.
             if !at_least_one_trait {
                 let msg = "at least one trait is required for an object type";
-                return Err(error::new2(dyn_span, last_lifetime_span.unwrap(), msg));
+                return Err(error::new2(
+                    dyn_span,
+                    last_lifetime_span.unwrap().clone(),
+                    msg,
+                ));
             }
             Ok(bounds)
         }
@@ -920,7 +924,7 @@ pub(crate) mod parsing {
                     TypeParamBound::PreciseCapture(precise_capture) => {
                         #[cfg(feature = "full")]
                         {
-                            last_nontrait_span = Some(precise_capture.gt_token.span);
+                            last_nontrait_span = Some(&precise_capture.gt_token.span);
                         }
                         #[cfg(not(feature = "full"))]
                         {
@@ -939,7 +943,7 @@ pub(crate) mod parsing {
                 let msg = "at least one trait must be specified";
                 return Err(error::new2(
                     impl_token.span,
-                    last_nontrait_span.unwrap(),
+                    last_nontrait_span.unwrap().clone(),
                     msg,
                 ));
             }
@@ -1141,7 +1145,7 @@ mod printing {
                 self.inputs.to_tokens(tokens);
                 if let Some(variadic) = &self.variadic {
                     if !self.inputs.empty_or_trailing() {
-                        let span = variadic.dots.spans[0];
+                        let span = variadic.dots.spans[0].clone();
                         Token![,](span).to_tokens(tokens);
                     }
                     variadic.to_tokens(tokens);

@@ -17,7 +17,7 @@ use proc_macro2::{Delimiter, Group, Literal, Span, TokenStream, TokenTree};
 use quote::ToTokens;
 use std::ffi::CStr;
 use std::str::FromStr;
-use syn::{Lit, LitFloat, LitInt, LitStr};
+use syn_send::{Lit, LitFloat, LitInt, LitStr};
 
 #[track_caller]
 fn lit(s: &str) -> Lit {
@@ -282,7 +282,7 @@ fn negative() {
 fn suffix() {
     #[track_caller]
     fn get_suffix(token: &str) -> String {
-        let lit = syn::parse_str::<Lit>(token).unwrap();
+        let lit = syn_send::parse_str::<Lit>(token).unwrap();
         match lit {
             Lit::Str(lit) => lit.suffix().to_owned(),
             Lit::ByteStr(lit) => lit.suffix().to_owned(),
@@ -327,9 +327,9 @@ fn test_deep_group_empty() {
 
 #[test]
 fn test_error() {
-    let err = syn::parse_str::<LitStr>("...").unwrap_err();
+    let err = syn_send::parse_str::<LitStr>("...").unwrap_err();
     assert_eq!("expected string literal", err.to_string());
 
-    let err = syn::parse_str::<LitStr>("5").unwrap_err();
+    let err = syn_send::parse_str::<LitStr>("5").unwrap_err();
     assert_eq!("expected string literal", err.to_string());
 }

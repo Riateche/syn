@@ -39,7 +39,7 @@
 //!     let defs: Definitions = serde_json::from_str(SYN).unwrap();
 //!
 //!     for node in &defs.types {
-//!         println!("syn::{}", node.ident);
+//!         println!("syn_send::{}", node.ident);
 //!     }
 //! }
 //! ```
@@ -69,8 +69,8 @@ pub struct Definitions {
     /// The keys in the map are the Rust type name for the token. The values in
     /// the map are the printed token representation.
     ///
-    /// These tokens are accessible in the Syn public API as `syn::token::#name`
-    /// or alternatively `syn::Token![#repr]`.
+    /// These tokens are accessible in the Syn public API as `syn_send::token::#name`
+    /// or alternatively `syn_send::Token![#repr]`.
     pub tokens: BTreeMap<String, String>,
 }
 
@@ -80,7 +80,7 @@ pub struct Definitions {
 pub struct Node {
     /// Name of the type.
     ///
-    /// This type is accessible in the Syn public API as `syn::#name`.
+    /// This type is accessible in the Syn public API as `syn_send::#name`.
     pub ident: String,
 
     /// Features behind which this type is cfg gated.
@@ -166,12 +166,12 @@ pub enum Type {
 
     /// Grouping token defined by Syn.
     ///
-    /// The type is accessible in the Syn public API as `syn::token::#name`.
+    /// The type is accessible in the Syn public API as `syn_send::token::#name`.
     Group(String),
 
     /// Punctuated list.
     ///
-    /// This refers to `syn::punctuated::Punctuated<T, P>` with the specified
+    /// This refers to `syn_send::punctuated::Punctuated<T, P>` with the specified
     /// element type and punctuation.
     Punctuated(Punctuated),
 
@@ -190,7 +190,7 @@ pub enum Type {
 
 /// Type of a punctuated list.
 ///
-/// This refers to `syn::punctuated::Punctuated<#element, #punct>`.
+/// This refers to `syn_send::punctuated::Punctuated<#element, #punct>`.
 ///
 /// The punct string will match one of the keys in the `tokens` map.
 #[derive(Clone, Debug, PartialEq)]

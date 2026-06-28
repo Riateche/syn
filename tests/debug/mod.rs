@@ -11,7 +11,7 @@ use proc_macro2::{Ident, Literal, TokenStream};
 use ref_cast::RefCast;
 use std::fmt::{self, Debug};
 use std::ops::Deref;
-use syn::punctuated::Punctuated;
+use syn_send::punctuated::Punctuated;
 
 #[derive(RefCast)]
 #[repr(transparent)]

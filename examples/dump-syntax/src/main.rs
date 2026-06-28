@@ -1,4 +1,4 @@
-//! Parse a Rust source file into a `syn::File` and print out a debug
+//! Parse a Rust source file into a `syn_send::File` and print out a debug
 //! representation of the syntax tree.
 //!
 //! Use the following command from this directory to test this program by
@@ -31,7 +31,7 @@ enum Error {
     IncorrectUsage,
     ReadFile(io::Error),
     ParseFile {
-        error: syn::Error,
+        error: syn_send::Error,
         filepath: PathBuf,
         source_code: String,
     },
@@ -68,7 +68,7 @@ fn try_main() -> Result<(), Error> {
     };
 
     let code = fs::read_to_string(&filepath).map_err(Error::ReadFile)?;
-    let syntax = syn::parse_file(&code).map_err({
+    let syntax = syn_send::parse_file(&code).map_err({
         |error| Error::ParseFile {
             error,
             filepath,
@@ -90,7 +90,7 @@ fn try_main() -> Result<(), Error> {
 //
 fn render_location(
     formatter: &mut fmt::Formatter,
-    err: &syn::Error,
+    err: &syn_send::Error,
     filepath: &Path,
     code: &str,
 ) -> fmt::Result {
@@ -140,6 +140,6 @@ fn render_location(
     )
 }
 
-fn render_fallback(formatter: &mut fmt::Formatter, err: &syn::Error) -> fmt::Result {
+fn render_fallback(formatter: &mut fmt::Formatter, err: &syn_send::Error) -> fmt::Result {
     write!(formatter, "Unable to parse file: {}", err)
 }

@@ -12,7 +12,7 @@ ast_struct! {
     ///
     /// # Example
     ///
-    /// Parse a Rust source file into a `syn::File` and print out a debug
+    /// Parse a Rust source file into a `syn_send::File` and print out a debug
     /// representation of the syntax tree.
     ///
     /// ```
@@ -36,7 +36,7 @@ ast_struct! {
     ///     };
     ///
     ///     let src = fs::read_to_string(&filename).expect("unable to read file");
-    ///     let syntax = syn::parse_file(&src).expect("unable to parse file");
+    ///     let syntax = syn_send::parse_file(&src).expect("unable to parse file");
     ///
     ///     // Debug impl is available if Syn is built with "extra-traits" feature.
     ///     println!("{:#?}", syntax);

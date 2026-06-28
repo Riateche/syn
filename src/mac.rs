@@ -54,16 +54,16 @@ impl Macro {
     /// Parse the tokens within the macro invocation's delimiters into a syntax
     /// tree.
     ///
-    /// This is equivalent to `syn::parse2::<T>(mac.tokens)` except that it
+    /// This is equivalent to `syn_send::parse2::<T>(mac.tokens)` except that it
     /// produces a more useful span when `tokens` is empty.
     ///
     /// # Example
     ///
     /// ```
-    /// use syn::{parse_quote, Expr, ExprLit, Ident, Lit, LitStr, Macro, Token};
-    /// use syn::ext::IdentExt;
-    /// use syn::parse::{Error, Parse, ParseStream, Result};
-    /// use syn::punctuated::Punctuated;
+    /// use syn_send::{parse_quote, Expr, ExprLit, Ident, Lit, LitStr, Macro, Token};
+    /// use syn_send::ext::IdentExt;
+    /// use syn_send::parse::{Error, Parse, ParseStream, Result};
+    /// use syn_send::punctuated::Punctuated;
     ///
     /// // The arguments expected by libcore's format_args macro, and as a
     /// // result most other formatting and printing macros like println.
@@ -206,11 +206,11 @@ mod printing {
     impl MacroDelimiter {
         pub(crate) fn surround(&self, tokens: &mut TokenStream, inner: TokenStream) {
             let (delim, span) = match self {
-                MacroDelimiter::Paren(paren) => (Delimiter::Parenthesis, paren.span),
-                MacroDelimiter::Brace(brace) => (Delimiter::Brace, brace.span),
-                MacroDelimiter::Bracket(bracket) => (Delimiter::Bracket, bracket.span),
+                MacroDelimiter::Paren(paren) => (Delimiter::Parenthesis, paren.span.clone()),
+                MacroDelimiter::Brace(brace) => (Delimiter::Brace, brace.span.clone()),
+                MacroDelimiter::Bracket(bracket) => (Delimiter::Bracket, bracket.span.clone()),
             };
-            token::printing::delim(delim, span.join(), tokens, inner);
+            token::printing::delim(delim, span.join().clone(), tokens, inner);
         }
     }
 

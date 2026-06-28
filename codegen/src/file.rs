@@ -14,7 +14,7 @@ pub fn write(relative_to_workspace_root: impl AsRef<Path>, content: TokenStream)
     writeln!(formatted, "// It is not intended for manual editing.")?;
     writeln!(formatted)?;
 
-    let syntax_tree: syn::File = syn::parse2(content).unwrap();
+    let syntax_tree: syn_send::File = syn_send::parse2(content).unwrap();
     let pretty = prettyplease::unparse(&syntax_tree);
     write!(formatted, "{}", pretty)?;
 

@@ -1,12 +1,12 @@
 // This test does the following for every file in the rust-lang/rust repo:
 //
-// 1. Parse the file using syn into a syn::File.
-// 2. Extract every syn::Expr from the file.
+// 1. Parse the file using syn into a syn_send::File.
+// 2. Extract every syn_send::Expr from the file.
 // 3. Print each expr to a string of source code.
 // 4. Parse the source code using librustc_parse into a rustc_ast::Expr.
-// 5. For both the syn::Expr and rustc_ast::Expr, crawl the syntax tree to
+// 5. For both the syn_send::Expr and rustc_ast::Expr, crawl the syntax tree to
 //    insert parentheses surrounding every subexpression.
-// 6. Serialize the fully parenthesized syn::Expr to a string of source code.
+// 6. Serialize the fully parenthesized syn_send::Expr to a string of source code.
 // 7. Parse the fully parenthesized source code using librustc_parse.
 // 8. Compare the rustc_ast::Expr resulting from parenthesizing using rustc data
 //    structures vs syn data structures, ignoring spans. If they agree, rustc's
@@ -49,7 +49,7 @@ use std::mem;
 use std::path::Path;
 use std::process;
 use std::sync::atomic::{AtomicUsize, Ordering};
-use syn::parse::Parser as _;
+use syn_send::parse::Parser as _;
 
 #[macro_use]
 mod macros;
@@ -75,7 +75,7 @@ fn test_rustc_precedence() {
     repo::for_each_rust_file(|path| {
         let content = fs::read_to_string(path).unwrap();
 
-        let (l_passed, l_failed) = match syn::parse_file(&content) {
+        let (l_passed, l_failed) = match syn_send::parse_file(&content) {
             Ok(file) => {
                 let edition = repo::edition(path).parse().unwrap();
                 let exprs = collect_exprs(file);
@@ -113,7 +113,7 @@ fn test_rustc_precedence() {
     }
 }
 
-fn test_expressions(path: &Path, edition: Edition, exprs: Vec<syn::Expr>) -> (usize, usize) {
+fn test_expressions(path: &Path, edition: Edition, exprs: Vec<syn_send::Expr>) -> (usize, usize) {
     let mut passed = 0;
     let mut failed = 0;
 
@@ -159,7 +159,8 @@ fn test_expressions(path: &Path, edition: Edition, exprs: Vec<syn::Expr>) -> (us
             }
 
             let expr_invisible = make_parens_invisible(expr);
-            let Ok(reparsed_expr_invisible) = syn::parse2(expr_invisible.to_token_stream()) else {
+            let Ok(reparsed_expr_invisible) = syn_send::parse2(expr_invisible.to_token_stream())
+            else {
                 failed += 1;
                 errorf!(
                     "\nFAIL {} - syn failed to parse invisible delimiters\n{}\n",
@@ -381,9 +382,9 @@ fn librustc_parenthesize(mut librustc_expr: Box<ast::Expr>) -> Box<ast::Expr> {
     librustc_expr
 }
 
-fn syn_parenthesize(syn_expr: syn::Expr) -> syn::Expr {
-    use syn::fold::{fold_expr, fold_generic_argument, Fold};
-    use syn::{
+fn syn_parenthesize(syn_expr: syn_send::Expr) -> syn_send::Expr {
+    use syn_send::fold::{fold_expr, fold_generic_argument, Fold};
+    use syn_send::{
         token, BinOp, Expr, ExprParen, GenericArgument, Lit, MetaNameValue, Pat, Stmt, Type,
     };
 
@@ -476,9 +477,9 @@ fn syn_parenthesize(syn_expr: syn::Expr) -> syn::Expr {
     folder.fold_expr(syn_expr)
 }
 
-fn make_parens_invisible(expr: syn::Expr) -> syn::Expr {
-    use syn::fold::{fold_expr, fold_stmt, Fold};
-    use syn::{token, Expr, ExprGroup, ExprParen, Stmt};
+fn make_parens_invisible(expr: syn_send::Expr) -> syn_send::Expr {
+    use syn_send::fold::{fold_expr, fold_stmt, Fold};
+    use syn_send::{token, Expr, ExprGroup, ExprParen, Stmt};
 
     struct MakeParensInvisible;
 
@@ -516,10 +517,10 @@ fn make_parens_invisible(expr: syn::Expr) -> syn::Expr {
 }
 
 /// Walk through a crate collecting all expressions we can find in it.
-fn collect_exprs(file: syn::File) -> Vec<syn::Expr> {
-    use syn::fold::Fold;
-    use syn::punctuated::Punctuated;
-    use syn::{token, ConstParam, Expr, ExprTuple, Pat, Path};
+fn collect_exprs(file: syn_send::File) -> Vec<syn_send::Expr> {
+    use syn_send::fold::Fold;
+    use syn_send::punctuated::Punctuated;
+    use syn_send::{token, ConstParam, Expr, ExprTuple, Pat, Path};
 
     struct CollectExprs(Vec<Expr>);
     impl Fold for CollectExprs {

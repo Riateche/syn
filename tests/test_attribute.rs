@@ -9,8 +9,8 @@ mod snapshot;
 
 mod debug;
 
-use syn::parse::Parser;
-use syn::{Attribute, Meta};
+use syn_send::parse::Parser;
+use syn_send::{Attribute, Meta};
 
 #[test]
 fn test_meta_item_word() {

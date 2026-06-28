@@ -161,7 +161,7 @@ impl Generics {
     /// # use proc_macro2::{Span, Ident};
     /// # use quote::quote;
     /// #
-    /// # let generics: syn::Generics = Default::default();
+    /// # let generics: syn_send::Generics = Default::default();
     /// # let name = Ident::new("MyType", Span::call_site());
     /// #
     /// let (impl_generics, ty_generics, where_clause) = generics.split_for_impl();
@@ -425,6 +425,7 @@ ast_enum! {
     /// A modifier on a trait bound, currently only used for the `?` in
     /// `?Sized`.
     #[cfg_attr(docsrs, doc(cfg(any(feature = "full", feature = "derive"))))]
+    #[cfg_attr(feature = "clone-impls", derive(Clone))]
     pub enum TraitBoundModifier {
         None,
         Maybe(Token![?]),
@@ -772,8 +773,8 @@ pub(crate) mod parsing {
                     } else {
                         let msg = "`use<...>` precise capturing syntax is not allowed here";
                         Err(error::new2(
-                            precise_capture.use_token.span,
-                            precise_capture.gt_token.span,
+                            precise_capture.use_token.span.clone(),
+                            precise_capture.gt_token.span.clone(),
                             msg,
                         ))
                     };
@@ -845,7 +846,7 @@ pub(crate) mod parsing {
                 conditionally_const.parse::<Token![const]>()?;
                 if !allow_const {
                     let msg = "`[const]` is not allowed here";
-                    return Err(Error::new(bracket_token.span.join(), msg));
+                    return Err(Error::new(bracket_token.span.join().clone(), msg));
                 }
             } else if is_unconditionally_const {
                 let const_token: Token![const] = input.parse()?;
@@ -875,7 +876,7 @@ pub(crate) mod parsing {
                     TraitBoundModifier::None => {}
                     TraitBoundModifier::Maybe(maybe) => {
                         let msg = "`for<...>` binder not allowed with `?` trait polarity modifier";
-                        return Err(Error::new(maybe.span, msg));
+                        return Err(Error::new(maybe.span.clone(), msg));
                     }
                 }
             }

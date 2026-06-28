@@ -1,7 +1,7 @@
 #![allow(unused_macros, unused_macro_rules)]
 
 use std::str::FromStr;
-use syn::parse::Result;
+use syn_send::parse::Result;
 
 macro_rules! snapshot {
     ($($args:tt)*) => {
@@ -12,7 +12,7 @@ macro_rules! snapshot {
 macro_rules! snapshot_impl {
     (($expr:ident) as $t:ty, @$snapshot:literal) => {
         let tokens = crate::snapshot::TryIntoTokens::try_into_tokens($expr).unwrap();
-        let $expr: $t = syn::parse_quote!(#tokens);
+        let $expr: $t = syn_send::parse_quote!(#tokens);
         let debug = crate::debug::Lite(&$expr);
         if !cfg!(miri) {
             #[allow(clippy::needless_raw_string_hashes)] // https://github.com/mitsuhiko/insta/issues/389
@@ -23,7 +23,7 @@ macro_rules! snapshot_impl {
     };
     (($($expr:tt)*) as $t:ty, @$snapshot:literal) => {{
         let tokens = crate::snapshot::TryIntoTokens::try_into_tokens($($expr)*).unwrap();
-        let syntax_tree: $t = syn::parse_quote!(#tokens);
+        let syntax_tree: $t = syn_send::parse_quote!(#tokens);
         let debug = crate::debug::Lite(&syntax_tree);
         if !cfg!(miri) {
             #[allow(clippy::needless_raw_string_hashes)]

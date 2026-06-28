@@ -9,7 +9,7 @@ mod snapshot;
 
 mod debug;
 
-use syn::{parse_quote, TraitItemFn};
+use syn_send::{parse_quote, TraitItemFn};
 
 #[test]
 fn test_by_value() {

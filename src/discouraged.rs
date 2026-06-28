@@ -51,10 +51,10 @@ pub trait Speculative {
     /// `Parse` implementation for `PathSegment`:
     ///
     /// ```
-    /// # use syn::ext::IdentExt;
-    /// use syn::parse::discouraged::Speculative;
-    /// # use syn::parse::{Parse, ParseStream};
-    /// # use syn::{Ident, PathArguments, Result, Token};
+    /// # use syn_send::ext::IdentExt;
+    /// use syn_send::parse::discouraged::Speculative;
+    /// # use syn_send::parse::{Parse, ParseStream};
+    /// # use syn_send::{Ident, PathArguments, Result, Token};
     ///
     /// pub struct PathSegment {
     ///     pub ident: Ident,
@@ -105,7 +105,7 @@ pub trait Speculative {
     ///     }
     /// }
     ///
-    /// # syn::parse_str::<PathSegment>("a<b,c>").unwrap();
+    /// # syn_send::parse_str::<PathSegment>("a<b,c>").unwrap();
     /// ```
     ///
     /// # Drawbacks

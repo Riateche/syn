@@ -9,8 +9,8 @@ mod snapshot;
 
 mod debug;
 
-use syn::punctuated::Punctuated;
-use syn::{parse_quote, Attribute, Field, Lit, Pat, Stmt, Token};
+use syn_send::punctuated::Punctuated;
+use syn_send::{parse_quote, Attribute, Field, Lit, Pat, Stmt, Token};
 
 #[test]
 fn test_attribute() {

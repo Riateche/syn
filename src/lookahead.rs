@@ -27,8 +27,8 @@ use proc_macro2::{Delimiter, Span};
 /// # Example
 ///
 /// ```
-/// use syn::{ConstParam, Ident, Lifetime, LifetimeParam, Result, Token, TypeParam};
-/// use syn::parse::{Parse, ParseStream};
+/// use syn_send::{ConstParam, Ident, Lifetime, LifetimeParam, Result, Token, TypeParam};
+/// use syn_send::parse::{Parse, ParseStream};
 ///
 /// // A generic parameter, a single one of the comma-separated elements inside
 /// // angle brackets in:
@@ -211,8 +211,8 @@ pub trait Peek: Sealed {
 /// ```
 /// use proc_macro2::TokenStream;
 /// use quote::quote;
-/// use syn::parse::{End, Parse, ParseStream, Result};
-/// use syn::{parse_quote, Attribute, LitStr, Token};
+/// use syn_send::parse::{End, Parse, ParseStream, Result};
+/// use syn_send::{parse_quote, Attribute, LitStr, Token};
 ///
 /// struct FormatArgs {
 ///     template: LitStr,  // "...{}..."
@@ -272,11 +272,11 @@ pub trait Peek: Sealed {
 ///
 /// ```
 /// # use proc_macro2::TokenStream;
-/// # use syn::parse::{ParseStream, Result};
-/// # use syn::Token;
+/// # use syn_send::parse::{ParseStream, Result};
+/// # use syn_send::Token;
 /// #
 /// # fn parse(input: ParseStream) -> Result<()> {
-/// use syn::parse::discouraged::Speculative as _;
+/// use syn_send::parse::discouraged::Speculative as _;
 ///
 /// let ahead = input.fork();
 /// ahead.parse::<Option<Token![,]>>()?;
@@ -294,8 +294,8 @@ pub trait Peek: Sealed {
 ///
 /// ```
 /// # use proc_macro2::TokenStream;
-/// # use syn::parse::{ParseStream, Result};
-/// # use syn::Token;
+/// # use syn_send::parse::{ParseStream, Result};
+/// # use syn_send::Token;
 /// #
 /// # fn parse(input: ParseStream) -> Result<()> {
 /// use quote::ToTokens as _;

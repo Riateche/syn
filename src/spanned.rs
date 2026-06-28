@@ -25,8 +25,8 @@
 //! use proc_macro::TokenStream;
 //! use proc_macro2::Span;
 //! use quote::quote_spanned;
-//! use syn::Type;
-//! use syn::spanned::Spanned;
+//! use syn_send::Type;
+//! use syn_send::spanned::Spanned;
 //!
 //! # const IGNORE_TOKENS: &str = stringify! {
 //! #[proc_macro_derive(MyMacro)]
@@ -73,14 +73,14 @@
 //! only the span of the *first token* of the syntax tree node is returned.
 //!
 //! In the common case of wanting to use the joined span as the span of a
-//! `syn::Error`, consider instead using [`syn::Error::new_spanned`] which is
+//! `syn_send::Error`, consider instead using [`syn_send::Error::new_spanned`] which is
 //! able to span the error correctly under the complete syntax tree node without
 //! needing the unstable `join`.
 //!
-//! [`syn::Error::new_spanned`]: crate::Error::new_spanned
+//! [`syn_send::Error::new_spanned`]: crate::Error::new_spanned
 
-use proc_macro2::Span;
 use quote::spanned::Spanned as ToTokens;
+use {proc_macro2::Span, std::borrow::Cow};
 
 /// A trait that can provide the `Span` of the complete contents of a syntax
 /// tree node.
@@ -98,11 +98,11 @@ pub trait Spanned: private::Sealed {
     /// node, or [`Span::call_site()`] if this node is empty.
     ///
     /// [`Span::call_site()`]: proc_macro2::Span::call_site
-    fn span(&self) -> Span;
+    fn span(&self) -> Cow<'_, Span>;
 }
 
 impl<T: ?Sized + ToTokens> Spanned for T {
-    fn span(&self) -> Span {
+    fn span(&self) -> Cow<'_, Span> {
         self.__span()
     }
 }

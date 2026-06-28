@@ -1,10 +1,10 @@
 use proc_macro2::{Ident, Span, TokenStream};
 use std::str::FromStr;
-use syn::Result;
+use syn_send::Result;
 
 #[track_caller]
 fn parse(s: &str) -> Result<Ident> {
-    syn::parse2(TokenStream::from_str(s).unwrap())
+    syn_send::parse2(TokenStream::from_str(s).unwrap())
 }
 
 #[track_caller]

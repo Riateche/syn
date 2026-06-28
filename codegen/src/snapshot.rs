@@ -3,7 +3,7 @@ use crate::{file, lookup};
 use anyhow::Result;
 use proc_macro2::{Ident, Span, TokenStream};
 use quote::{format_ident, quote};
-use syn::Index;
+use syn_send::Index;
 use syn_codegen::{Data, Definitions, Node, Type};
 
 const TESTS_DEBUG_SRC: &str = "tests/debug/gen.rs";
@@ -12,7 +12,7 @@ fn rust_type(ty: &Type) -> TokenStream {
     match ty {
         Type::Syn(ty) => {
             let ident = Ident::new(ty, Span::call_site());
-            quote!(syn::#ident)
+            quote!(syn_send::#ident)
         }
         Type::Std(ty) => {
             let ident = Ident::new(ty, Span::call_site());
@@ -24,12 +24,12 @@ fn rust_type(ty: &Type) -> TokenStream {
         }
         Type::Token(ty) | Type::Group(ty) => {
             let ident = Ident::new(ty, Span::call_site());
-            quote!(syn::token::#ident)
+            quote!(syn_send::token::#ident)
         }
         Type::Punctuated(ty) => {
             let element = rust_type(&ty.element);
             let punct = Ident::new(&ty.punct, Span::call_site());
-            quote!(syn::punctuated::Punctuated<#element, #punct>)
+            quote!(syn_send::punctuated::Punctuated<#element, #punct>)
         }
         Type::Option(ty) => {
             let inner = rust_type(ty);
@@ -154,7 +154,7 @@ fn expand_impl_body(defs: &Definitions, node: &Node, name: &str, val: &Operand) 
                 let variant = Ident::new(v, Span::call_site());
                 if fields.is_empty() {
                     quote! {
-                        syn::#ident::#variant => formatter.write_str(#path),
+                        syn_send::#ident::#variant => formatter.write_str(#path),
                     }
                 } else if let Some(inner) = syntax_tree_enum(name, v, fields) {
                     let format = expand_impl_body(
@@ -164,7 +164,7 @@ fn expand_impl_body(defs: &Definitions, node: &Node, name: &str, val: &Operand) 
                         &Borrowed(quote!(_val)),
                     );
                     quote! {
-                        syn::#ident::#variant(_val) => {
+                        syn_send::#ident::#variant(_val) => {
                             #format
                         }
                     }
@@ -187,7 +187,7 @@ fn expand_impl_body(defs: &Definitions, node: &Node, name: &str, val: &Operand) 
                         })
                     };
                     quote! {
-                        syn::#ident::#variant(_val) => {
+                        syn_send::#ident::#variant(_val) => {
                             formatter.write_str(#path)?;
                             #format
                             Ok(())
@@ -204,7 +204,7 @@ fn expand_impl_body(defs: &Definitions, node: &Node, name: &str, val: &Operand) 
                         })
                     });
                     quote! {
-                        syn::#ident::#variant(#(#pats),*) => {
+                        syn_send::#ident::#variant(#(#pats),*) => {
                             let mut formatter = formatter.debug_tuple(#path);
                             #(#fields)*
                             formatter.finish()
@@ -323,7 +323,7 @@ fn expand_impl(defs: &Definitions, node: &Node) -> TokenStream {
     };
 
     quote! {
-        impl Debug for Lite<syn::#ident> {
+        impl Debug for Lite<syn_send::#ident> {
             fn fmt(&self, #formatter: &mut fmt::Formatter) -> fmt::Result {
                 #body
             }
@@ -336,7 +336,7 @@ fn expand_token_impl(name: &str, symbol: &str) -> TokenStream {
     let repr = format!("Token![{}]", symbol);
 
     quote! {
-        impl Debug for Lite<syn::token::#ident> {
+        impl Debug for Lite<syn_send::token::#ident> {
             fn fmt(&self, formatter: &mut fmt::Formatter) -> fmt::Result {
                 formatter.write_str(#repr)
             }

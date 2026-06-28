@@ -1,6 +1,7 @@
 ast_enum! {
     /// A binary operator: `+`, `+=`, `&`.
     #[cfg_attr(docsrs, doc(cfg(any(feature = "full", feature = "derive"))))]
+    #[cfg_attr(feature = "clone-impls", derive(Clone))]
     #[non_exhaustive]
     pub enum BinOp {
         /// The `+` operator (addition)
@@ -66,6 +67,7 @@ ast_enum! {
     /// A unary operator: `*`, `!`, `-`.
     #[cfg_attr(docsrs, doc(cfg(any(feature = "full", feature = "derive"))))]
     #[non_exhaustive]
+    #[cfg_attr(feature = "clone-impls", derive(Clone))]
     pub enum UnOp {
         /// The `*` operator for dereferencing
         Deref(Token![*]),

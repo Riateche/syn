@@ -48,7 +48,7 @@ impl Path {
     ///
     /// ```
     /// use proc_macro2::TokenStream;
-    /// use syn::{Attribute, Error, Meta, Result};
+    /// use syn_send::{Attribute, Error, Meta, Result};
     ///
     /// fn get_serde_meta_item(attr: &Attribute) -> Result<Option<&TokenStream>> {
     ///     if attr.path().is_ident("serde") {
@@ -97,8 +97,8 @@ impl Path {
     pub fn require_ident(&self) -> Result<&Ident> {
         self.get_ident().ok_or_else(|| {
             crate::error::new2(
-                self.segments.first().unwrap().ident.span(),
-                self.segments.last().unwrap().ident.span(),
+                self.segments.first().unwrap().ident.span().clone(),
+                self.segments.last().unwrap().ident.span().clone(),
                 "expected this path to be an identifier",
             )
         })
@@ -549,8 +549,8 @@ pub(crate) mod parsing {
         /// # Example
         ///
         /// ```
-        /// use syn::{Path, Result, Token};
-        /// use syn::parse::{Parse, ParseStream};
+        /// use syn_send::{Path, Result, Token};
+        /// use syn_send::parse::{Parse, ParseStream};
         ///
         /// // A simplified single `use` statement like:
         /// //
@@ -703,13 +703,13 @@ pub(crate) mod printing {
         ParenthesizedGenericArguments, Path, PathArguments, PathSegment, QSelf,
     };
     use crate::print::TokensOrDefault;
-    #[cfg(feature = "parsing")]
-    use crate::spanned::Spanned;
     use core::cmp;
     #[cfg(feature = "parsing")]
     use proc_macro2::Span;
     use proc_macro2::TokenStream;
     use quote::ToTokens;
+    #[cfg(feature = "parsing")]
+    use {crate::spanned::Spanned, std::borrow::Cow};
 
     pub(crate) enum PathStyle {
         Expr,
@@ -949,7 +949,7 @@ pub(crate) mod printing {
     #[cfg(feature = "parsing")]
     #[cfg_attr(docsrs, doc(cfg(all(feature = "parsing", feature = "printing"))))]
     impl Spanned for QSelf {
-        fn span(&self) -> Span {
+        fn span(&self) -> Cow<'_, Span> {
             struct QSelfDelimiters<'a>(&'a QSelf);
 
             impl<'a> ToTokens for QSelfDelimiters<'a> {
@@ -959,7 +959,7 @@ pub(crate) mod printing {
                 }
             }
 
-            QSelfDelimiters(self).span()
+            Cow::Owned(QSelfDelimiters(self).span().into_owned())
         }
     }
 }

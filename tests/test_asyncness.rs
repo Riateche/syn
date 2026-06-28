@@ -9,7 +9,7 @@ mod snapshot;
 
 mod debug;
 
-use syn::{Expr, Item};
+use syn_send::{Expr, Item};
 
 #[test]
 fn test_async_fn() {

@@ -42,7 +42,7 @@ use proc_macro2::Ident;
 /// # extern crate proc_macro;
 /// #
 /// use proc_macro::TokenStream;
-/// use syn::{parse_macro_input, LitStr, Path};
+/// use syn_send::{parse_macro_input, LitStr, Path};
 ///
 /// # const IGNORE: &str = stringify! {
 /// #[proc_macro_attribute]
@@ -51,7 +51,7 @@ use proc_macro2::Ident;
 ///     let mut kind: Option<LitStr> = None;
 ///     let mut hot: bool = false;
 ///     let mut with: Vec<Path> = Vec::new();
-///     let tea_parser = syn::meta::parser(|meta| {
+///     let tea_parser = syn_send::meta::parser(|meta| {
 ///         if meta.path.is_ident("kind") {
 ///             kind = Some(meta.value()?.parse()?);
 ///             Ok(())
@@ -76,7 +76,7 @@ use proc_macro2::Ident;
 /// }
 /// ```
 ///
-/// The `syn::meta` library will take care of dealing with the commas including
+/// The `syn_send::meta` library will take care of dealing with the commas including
 /// trailing commas, and producing sensible error messages on unexpected input.
 ///
 /// ```console
@@ -95,16 +95,16 @@ use proc_macro2::Ident;
 /// # extern crate proc_macro;
 /// #
 /// use proc_macro::TokenStream;
-/// use syn::meta::ParseNestedMeta;
-/// use syn::parse::{Parser, Result};
-/// use syn::{parse_macro_input, LitStr, Path};
+/// use syn_send::meta::ParseNestedMeta;
+/// use syn_send::parse::{Parser, Result};
+/// use syn_send::{parse_macro_input, LitStr, Path};
 ///
 /// # const IGNORE: &str = stringify! {
 /// #[proc_macro_attribute]
 /// # };
 /// pub fn tea(args: TokenStream, input: TokenStream) -> TokenStream {
 ///     let mut attrs = TeaAttributes::default();
-///     let tea_parser = syn::meta::parser(|meta| attrs.parse(meta));
+///     let tea_parser = syn_send::meta::parser(|meta| attrs.parse(meta));
 ///     parse_macro_input!(args with tea_parser);
 ///
 ///     /* ... */
@@ -151,7 +151,7 @@ pub fn parser(logic: impl FnMut(ParseNestedMeta) -> Result<()>) -> impl Parser<O
 ///   better error messages because `Attribute` holds span information for all
 ///   of the delimiters therein.
 ///
-/// - [`syn::meta::parser`] if you are implementing a `proc_macro_attribute`
+/// - [`syn_send::meta::parser`] if you are implementing a `proc_macro_attribute`
 ///   macro and parsing the arguments to the attribute macro, i.e. the ones
 ///   written in the same attribute that dispatched the macro invocation. Rustc
 ///   does not pass span information for the surrounding delimiters into the
@@ -159,7 +159,7 @@ pub fn parser(logic: impl FnMut(ParseNestedMeta) -> Result<()>) -> impl Parser<O
 ///   less precise.
 ///
 /// [`Attribute::parse_nested_meta`]: crate::Attribute::parse_nested_meta
-/// [`syn::meta::parser`]: crate::meta::parser
+/// [`syn_send::meta::parser`]: crate::meta::parser
 #[non_exhaustive]
 pub struct ParseNestedMeta<'a> {
     pub path: Path,
@@ -177,7 +177,7 @@ impl<'a> ParseNestedMeta<'a> {
     /// # Example
     ///
     /// ```
-    /// use syn::{parse_quote, Attribute, LitStr};
+    /// use syn_send::{parse_quote, Attribute, LitStr};
     ///
     /// let attr: Attribute = parse_quote! {
     ///     #[tea(kind = "EarlGrey")]
@@ -211,7 +211,7 @@ impl<'a> ParseNestedMeta<'a> {
     /// # Example
     ///
     /// ```
-    /// use syn::{parse_quote, Attribute};
+    /// use syn_send::{parse_quote, Attribute};
     ///
     /// let attr: Attribute = parse_quote! {
     ///     #[tea(with(sugar, milk))]
@@ -247,7 +247,7 @@ impl<'a> ParseNestedMeta<'a> {
     /// `parse_nested_meta` is not what you want.
     ///
     /// ```
-    /// use syn::{parenthesized, parse_quote, Attribute, LitInt};
+    /// use syn_send::{parenthesized, parse_quote, Attribute, LitInt};
     ///
     /// let attr: Attribute = parse_quote! {
     ///     #[repr(align(32))]
@@ -286,9 +286,9 @@ impl<'a> ParseNestedMeta<'a> {
     /// something you recognize:
     ///
     /// ```
-    /// # use syn::Attribute;
+    /// # use syn_send::Attribute;
     /// #
-    /// # fn example(attr: &Attribute) -> syn::Result<()> {
+    /// # fn example(attr: &Attribute) -> syn_send::Result<()> {
     /// attr.parse_nested_meta(|meta| {
     ///     if meta.path.is_ident("kind") {
     ///         // ...
@@ -302,7 +302,7 @@ impl<'a> ParseNestedMeta<'a> {
     /// ```
     ///
     /// In this case, it behaves exactly like
-    /// `syn::Error::new_spanned(&meta.path, "message...")`.
+    /// `syn_send::Error::new_spanned(&meta.path, "message...")`.
     ///
     /// ```console
     /// error: unsupported tea property
@@ -316,10 +316,10 @@ impl<'a> ParseNestedMeta<'a> {
     /// have decided not to accept the value:
     ///
     /// ```
-    /// # use syn::Attribute;
+    /// # use syn_send::Attribute;
     /// #
-    /// # fn example(attr: &Attribute) -> syn::Result<()> {
-    /// use syn::Expr;
+    /// # fn example(attr: &Attribute) -> syn_send::Result<()> {
+    /// use syn_send::Expr;
     ///
     /// attr.parse_nested_meta(|meta| {
     ///     if meta.path.is_ident("kind") {
@@ -349,13 +349,13 @@ impl<'a> ParseNestedMeta<'a> {
     ///   |       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
     /// ```
     ///
-    /// Often you may want to use `syn::Error::new_spanned` even in this
+    /// Often you may want to use `syn_send::Error::new_spanned` even in this
     /// situation. In the above code, that would be:
     ///
     /// ```
-    /// # use syn::{Error, Expr};
+    /// # use syn_send::{Error, Expr};
     /// #
-    /// # fn example(expr: Expr) -> syn::Result<()> {
+    /// # fn example(expr: Expr) -> syn_send::Result<()> {
     ///     match expr {
     ///         Expr::Lit(expr) => /* ... */
     /// #           unimplemented!(),
@@ -378,7 +378,7 @@ impl<'a> ParseNestedMeta<'a> {
     pub fn error(&self, msg: impl Display) -> Error {
         let start_span = self.path.segments[0].ident.span();
         let end_span = self.input.cursor().prev_span();
-        crate::error::new2(start_span, end_span, msg)
+        crate::error::new2(start_span.clone(), end_span, msg)
     }
 }
 

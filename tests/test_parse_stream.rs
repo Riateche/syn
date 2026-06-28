@@ -2,10 +2,10 @@
 
 use proc_macro2::{Delimiter, Group, Punct, Spacing, Span, TokenStream, TokenTree};
 use quote::quote;
-use syn::ext::IdentExt as _;
-use syn::parse::discouraged::AnyDelimiter;
-use syn::parse::{ParseStream, Parser as _, Result};
-use syn::{parenthesized, token, Ident, Lifetime, Token};
+use syn_send::ext::IdentExt as _;
+use syn_send::parse::discouraged::AnyDelimiter;
+use syn_send::parse::{ParseStream, Parser as _, Result};
+use syn_send::{parenthesized, token, Ident, Lifetime, Token};
 
 #[test]
 fn test_peek_punct() {

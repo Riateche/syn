@@ -12,8 +12,8 @@ mod snapshot;
 mod debug;
 
 use quote::quote;
-use syn::parse::{ParseStream, Parser as _, Result};
-use syn::{Meta, MetaList, MetaNameValue, Token};
+use syn_send::parse::{ParseStream, Parser as _, Result};
+use syn_send::{Meta, MetaList, MetaNameValue, Token};
 
 #[test]
 fn test_parse_meta_item_word() {
@@ -166,7 +166,7 @@ fn test_fat_arrow_after_meta() {
             let _: Meta = input.parse()?;
             let _: Token![=>] = input.parse()?;
             let brace;
-            syn::braced!(brace in input);
+            syn_send::braced!(brace in input);
         }
         Ok(())
     }

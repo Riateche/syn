@@ -1,7 +1,7 @@
 // Assumes proc-macro2's "span-locations" feature is off.
 
 use std::mem;
-use syn::{Expr, Item, Lit, Pat, Type};
+use syn_send::{Expr, Item, Lit, Pat, Type};
 
 #[rustversion::attr(before(2022-11-24), ignore = "requires nightly-2022-11-24 or newer")]
 #[rustversion::attr(

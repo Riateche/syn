@@ -20,13 +20,13 @@ impl IntoSpans<[Span; 1]> for Span {
 
 impl IntoSpans<[Span; 2]> for Span {
     fn into_spans(self) -> [Span; 2] {
-        [self, self]
+        [self.clone(), self]
     }
 }
 
 impl IntoSpans<[Span; 3]> for Span {
     fn into_spans(self) -> [Span; 3] {
-        [self, self, self]
+        [self.clone(), self.clone(), self]
     }
 }
 

@@ -120,7 +120,7 @@ impl Fields {
         /// ```
         /// # use quote::quote;
         /// #
-        /// fn derive_clone(input: &syn::ItemStruct) -> proc_macro2::TokenStream {
+        /// fn derive_clone(input: &syn_send::ItemStruct) -> proc_macro2::TokenStream {
         ///     let ident = &input.ident;
         ///     let members = input.fields.members();
         ///     let (impl_generics, ty_generics, where_clause) = input.generics.split_for_impl();
@@ -219,7 +219,7 @@ impl<'a> Iterator for Members<'a> {
                 let span = proc_macro2::Span::call_site();
                 Member::Unnamed(Index {
                     index: self.index,
-                    span,
+                    span: span.into_owned(),
                 })
             }
         };

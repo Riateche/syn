@@ -13,7 +13,7 @@ mod debug;
 
 use proc_macro2::{Delimiter, Group, Ident, Span, TokenStream, TokenTree};
 use quote::quote;
-use syn::{Item, ItemTrait};
+use syn_send::{Item, ItemTrait};
 
 #[test]
 fn test_macro_variable_attr() {
@@ -70,7 +70,7 @@ fn test_negative_impl() {
     let tokens = quote! {
         impl !Trait {}
     };
-    let err = syn::parse2::<Item>(tokens).unwrap_err();
+    let err = syn_send::parse2::<Item>(tokens).unwrap_err();
     assert_eq!(err.to_string(), "inherent impls cannot be negative");
 
     #[cfg(any())]
@@ -367,5 +367,5 @@ fn test_nested_receiver_classification() {
         ) {}
     };
 
-    let _ = syn::parse2::<syn::File>(tokens);
+    let _ = syn_send::parse2::<syn_send::File>(tokens);
 }

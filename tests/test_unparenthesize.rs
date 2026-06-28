@@ -15,7 +15,7 @@ use std::fs;
 use std::panic;
 use std::path::Path;
 use std::sync::atomic::{AtomicUsize, Ordering};
-use syn::visit_mut::VisitMut as _;
+use syn_send::visit_mut::VisitMut as _;
 
 #[macro_use]
 mod macros;
@@ -41,11 +41,11 @@ fn test_unparenthesize() {
 fn test(path: &Path, failed: &AtomicUsize) {
     let content = fs::read_to_string(path).unwrap();
 
-    match panic::catch_unwind(|| -> syn::Result<()> {
-        let mut before = syn::parse_file(&content)?;
+    match panic::catch_unwind(|| -> syn_send::Result<()> {
+        let mut before = syn_send::parse_file(&content)?;
         FlattenParens::discard_attrs().visit_file_mut(&mut before);
         let printed = before.to_token_stream();
-        let mut after = syn::parse2::<syn::File>(printed.clone())?;
+        let mut after = syn_send::parse2::<syn_send::File>(printed.clone())?;
         FlattenParens::discard_attrs().visit_file_mut(&mut after);
         // Normalize features that we expect Syn not to print.
         AsIfPrinted.visit_file_mut(&mut before);

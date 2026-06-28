@@ -2,9 +2,9 @@
 
 use proc_macro2::{Delimiter, Group, Ident, Punct, Spacing, TokenStream, TokenTree};
 use std::panic;
-use syn::parse::discouraged::Speculative as _;
-use syn::parse::{Parse, ParseStream, Parser, Result};
-use syn::{parenthesized, Token};
+use syn_send::parse::discouraged::Speculative as _;
+use syn_send::parse::{Parse, ParseStream, Parser, Result};
+use syn_send::{parenthesized, Token};
 
 #[test]
 #[should_panic(expected = "fork was not derived from the advancing parse stream")]
@@ -20,7 +20,7 @@ fn smuggled_speculative_cursor_between_sources() {
         }
     }
 
-    syn::parse_str::<BreakRules>("").unwrap();
+    syn_send::parse_str::<BreakRules>("").unwrap();
 }
 
 #[test]
@@ -38,7 +38,7 @@ fn smuggled_speculative_cursor_between_brackets() {
         }
     }
 
-    syn::parse_str::<BreakRules>("()()").unwrap();
+    syn_send::parse_str::<BreakRules>("()()").unwrap();
 }
 
 #[test]
@@ -54,7 +54,7 @@ fn smuggled_speculative_cursor_into_brackets() {
         }
     }
 
-    syn::parse_str::<BreakRules>("()").unwrap();
+    syn_send::parse_str::<BreakRules>("()").unwrap();
 }
 
 #[test]

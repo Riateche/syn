@@ -1623,7 +1623,7 @@ pub(crate) mod parsing {
                 attrs,
                 pat: Box::new(Pat::Wild(PatWild {
                     attrs: Vec::new(),
-                    underscore_token: Token![_](span),
+                    underscore_token: Token![_](span.clone()),
                 })),
                 colon_token: Token![:](span),
                 ty: input.parse()?,
@@ -1698,13 +1698,13 @@ pub(crate) mod parsing {
         } else {
             let mut ty = Type::Path(TypePath {
                 qself: None,
-                path: Path::from(Ident::new("Self", self_token.span)),
+                path: Path::from(Ident::new("Self", self_token.span.clone())),
             });
             if let Some((ampersand, lifetime)) = reference.as_ref() {
                 ty = Type::Reference(TypeReference {
-                    and_token: Token![&](ampersand.span),
+                    and_token: Token![&](ampersand.span.clone()),
                     lifetime: lifetime.clone(),
-                    mutability: mutability.as_ref().map(|m| Token![mut](m.span)),
+                    mutability: mutability.as_ref().map(|m| Token![mut](m.span.clone())),
                     elem: Box::new(ty),
                 });
             }
@@ -1763,13 +1763,13 @@ pub(crate) mod parsing {
             match &arg {
                 FnArg::Receiver(receiver) if has_receiver => {
                     return Err(Error::new(
-                        receiver.self_token.span,
+                        receiver.self_token.span.clone(),
                         "unexpected second method receiver",
                     ));
                 }
                 FnArg::Receiver(receiver) if !args.is_empty() => {
                     return Err(Error::new(
-                        receiver.self_token.span,
+                        receiver.self_token.span.clone(),
                         "unexpected method receiver",
                     ));
                 }
@@ -2648,7 +2648,7 @@ pub(crate) mod parsing {
             self_ty = input.parse()?;
         } else if let Some(polarity) = polarity {
             return Err(Error::new(
-                polarity.span,
+                polarity.span.clone(),
                 "inherent impls cannot be negative",
             ));
         } else {

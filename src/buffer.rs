@@ -62,14 +62,6 @@ impl TokenBuffer {
     }
 
     /// Creates a `TokenBuffer` containing all the tokens from the input
-    /// `proc_macro::TokenStream`.
-    #[cfg(feature = "proc-macro")]
-    #[cfg_attr(docsrs, doc(cfg(feature = "proc-macro")))]
-    pub fn new(stream: proc_macro::TokenStream) -> Self {
-        Self::new2(stream.into())
-    }
-
-    /// Creates a `TokenBuffer` containing all the tokens from the input
     /// `proc_macro2::TokenStream`.
     pub fn new2(stream: TokenStream) -> Self {
         let mut entries = Vec::new();
@@ -228,7 +220,7 @@ impl<'a> Cursor<'a> {
                 let next = unsafe { self.bump_ignore_group() };
                 let (ident, rest) = next.ident()?;
                 let lifetime = Lifetime {
-                    apostrophe: punct.span(),
+                    apostrophe: punct.span().clone(),
                     ident,
                 };
                 Some((lifetime, rest))
@@ -321,10 +313,10 @@ impl<'a> Cursor<'a> {
     /// cursor points to eof.
     pub fn span(mut self) -> Span {
         match self.entry() {
-            Entry::Group(group, _) => group.span(),
-            Entry::Literal(literal) => literal.span(),
-            Entry::Ident(ident) => ident.span(),
-            Entry::Punct(punct) => punct.span(),
+            Entry::Group(group, _) => group.span().clone(),
+            Entry::Literal(literal) => literal.span().clone(),
+            Entry::Ident(ident) => ident.span().clone(),
+            Entry::Punct(punct) => punct.span().clone(),
             Entry::End(_, offset) => {
                 self.ptr = unsafe { self.ptr.offset(*offset) };
                 if let Entry::Group(group, _) = self.entry() {

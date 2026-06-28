@@ -9,7 +9,7 @@ fn main() {
         pub static FOO: usize;
         pub static BAR: usize;
     };
-    let file = syn::parse2::<syn::File>(tokens).unwrap();
+    let file = syn_send::parse2::<syn_send::File>(tokens).unwrap();
     println!("{:#?}", file);
 
     // Okay.
@@ -18,7 +18,7 @@ fn main() {
         quote!(static FOO: usize = 0; pub static BAR: usize = 0),
     );
     let tokens = quote!(pub #inner;);
-    let file = syn::parse2::<syn::File>(tokens).unwrap();
+    let file = syn_send::parse2::<syn_send::File>(tokens).unwrap();
     println!("{:#?}", file);
 
     // Formerly parser crash.
@@ -27,6 +27,6 @@ fn main() {
         quote!(static FOO: usize; pub static BAR: usize),
     );
     let tokens = quote!(pub #inner;);
-    let file = syn::parse2::<syn::File>(tokens).unwrap();
+    let file = syn_send::parse2::<syn_send::File>(tokens).unwrap();
     println!("{:#?}", file);
 }

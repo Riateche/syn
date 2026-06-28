@@ -71,7 +71,7 @@ pub fn parse_brackets<'a>(input: &ParseBuffer<'a>) -> Result<Brackets<'a>> {
 #[cfg(any(feature = "full", feature = "derive"))]
 pub(crate) fn parse_group<'a>(input: &ParseBuffer<'a>) -> Result<Group<'a>> {
     parse_delimited(input, Delimiter::None).map(|(span, content)| Group {
-        token: token::Group(span.join()),
+        token: token::Group(span.join().clone()),
         content,
     })
 }
@@ -106,9 +106,9 @@ fn parse_delimited<'a>(
 /// ```
 /// # use quote::quote;
 /// #
-/// use syn::{parenthesized, token, Ident, Result, Token, Type};
-/// use syn::parse::{Parse, ParseStream};
-/// use syn::punctuated::Punctuated;
+/// use syn_send::{parenthesized, token, Ident, Result, Token, Type};
+/// use syn_send::parse::{Parse, ParseStream};
+/// use syn_send::punctuated::Punctuated;
 ///
 /// // Parse a simplified tuple struct syntax like:
 /// //
@@ -138,7 +138,7 @@ fn parse_delimited<'a>(
 /// #     let input = quote! {
 /// #         struct S(A, B);
 /// #     };
-/// #     syn::parse2::<TupleStruct>(input).unwrap();
+/// #     syn_send::parse2::<TupleStruct>(input).unwrap();
 /// # }
 /// ```
 #[macro_export]
@@ -165,9 +165,9 @@ macro_rules! parenthesized {
 /// ```
 /// # use quote::quote;
 /// #
-/// use syn::{braced, token, Ident, Result, Token, Type};
-/// use syn::parse::{Parse, ParseStream};
-/// use syn::punctuated::Punctuated;
+/// use syn_send::{braced, token, Ident, Result, Token, Type};
+/// use syn_send::parse::{Parse, ParseStream};
+/// use syn_send::punctuated::Punctuated;
 ///
 /// // Parse a simplified struct syntax like:
 /// //
@@ -217,7 +217,7 @@ macro_rules! parenthesized {
 /// #             b: B,
 /// #         }
 /// #     };
-/// #     syn::parse2::<Struct>(input).unwrap();
+/// #     syn_send::parse2::<Struct>(input).unwrap();
 /// # }
 /// ```
 #[macro_export]
@@ -246,8 +246,8 @@ macro_rules! braced {
 /// # use quote::quote;
 /// #
 /// use proc_macro2::TokenStream;
-/// use syn::{bracketed, token, Result, Token};
-/// use syn::parse::{Parse, ParseStream};
+/// use syn_send::{bracketed, token, Result, Token};
+/// use syn_send::parse::{Parse, ParseStream};
 ///
 /// // Parse an outer attribute like:
 /// //
@@ -273,7 +273,7 @@ macro_rules! braced {
 /// #     let input = quote! {
 /// #         #[repr(C, packed)]
 /// #     };
-/// #     syn::parse2::<OuterAttribute>(input).unwrap();
+/// #     syn_send::parse2::<OuterAttribute>(input).unwrap();
 /// # }
 /// ```
 #[macro_export]

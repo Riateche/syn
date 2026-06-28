@@ -30,7 +30,7 @@ impl Lifetime {
     ///
     /// ```
     /// # use proc_macro2::Span;
-    /// # use syn::Lifetime;
+    /// # use syn_send::Lifetime;
     /// #
     /// # fn f() -> Lifetime {
     /// Lifetime::new("'a", Span::call_site())
@@ -53,7 +53,7 @@ impl Lifetime {
         }
 
         Lifetime {
-            apostrophe: span,
+            apostrophe: span.clone(),
             ident: Ident::new(&symbol[1..], span),
         }
     }
@@ -61,11 +61,11 @@ impl Lifetime {
     pub fn span(&self) -> Span {
         self.apostrophe
             .join(self.ident.span())
-            .unwrap_or(self.apostrophe)
+            .unwrap_or(self.apostrophe.clone())
     }
 
     pub fn set_span(&mut self, span: Span) {
-        self.apostrophe = span;
+        self.apostrophe = span.clone();
         self.ident.set_span(span);
     }
 }
@@ -80,7 +80,7 @@ impl Display for Lifetime {
 impl Clone for Lifetime {
     fn clone(&self) -> Self {
         Lifetime {
-            apostrophe: self.apostrophe,
+            apostrophe: self.apostrophe.clone(),
             ident: self.ident.clone(),
         }
     }
@@ -149,7 +149,11 @@ mod printing {
     #[cfg_attr(docsrs, doc(cfg(feature = "printing")))]
     impl ToTokens for Lifetime {
         fn to_tokens(&self, tokens: &mut TokenStream) {
-            tokens.append(Punct::new_spanned('\'', Spacing::Joint, self.apostrophe));
+            tokens.append(Punct::new_spanned(
+                '\'',
+                Spacing::Joint,
+                self.apostrophe.clone(),
+            ));
             self.ident.to_tokens(tokens);
         }
     }

@@ -1,7 +1,7 @@
 use proc_macro2::TokenStream;
 use quote::{quote, quote_spanned};
-use syn::spanned::Spanned;
-use syn::{
+use syn_send::spanned::Spanned;
+use syn_send::{
     parse_macro_input, parse_quote, Data, DeriveInput, Fields, GenericParam, Generics, Index,
 };
 
@@ -55,7 +55,7 @@ fn heap_size_sum(data: &Data) -> TokenStream {
                     //
                     // but using fully qualified function call syntax.
                     //
-                    // We take some care to use the span of each `syn::Field` as
+                    // We take some care to use the span of each `syn_send::Field` as
                     // the span of the corresponding `heap_size_of_children`
                     // call. This way if one of the field types does not
                     // implement `HeapSize` then the compiler's error message

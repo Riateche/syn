@@ -165,7 +165,7 @@ impl LitStr {
     /// # Example
     ///
     /// ```
-    /// use syn::{Attribute, Error, Expr, Lit, Meta, Path, Result};
+    /// use syn_send::{Attribute, Error, Expr, Lit, Meta, Path, Result};
     ///
     /// // Parses the path from an attribute that looks like:
     /// //
@@ -203,7 +203,7 @@ impl LitStr {
     ///
     /// ```
     /// # use proc_macro2::Span;
-    /// # use syn::{LitStr, Result};
+    /// # use syn_send::{LitStr, Result};
     /// #
     /// # fn main() -> Result<()> {
     /// #     let lit_str = LitStr::new("a::b::c", Span::call_site());
@@ -214,7 +214,7 @@ impl LitStr {
     ///
     /// // Parse a string literal like "a::b::c" into a Path, not allowing
     /// // generic arguments on any of the path segments.
-    /// let basic_path = lit_str.parse_with(syn::Path::parse_mod_style)?;
+    /// let basic_path = lit_str.parse_with(syn_send::Path::parse_mod_style)?;
     /// #
     /// #     Ok(())
     /// # }
@@ -228,7 +228,7 @@ impl LitStr {
         fn respan_token_stream(stream: TokenStream, span: Span) -> TokenStream {
             let mut tokens = TokenStream::new();
             for token in stream {
-                tokens.append(respan_token_tree(token, span));
+                tokens.append(respan_token_tree(token, span.clone()));
             }
             tokens
         }
@@ -237,7 +237,7 @@ impl LitStr {
         fn respan_token_tree(mut token: TokenTree, span: Span) -> TokenTree {
             match &mut token {
                 TokenTree::Group(g) => {
-                    let stream = respan_token_stream(g.stream(), span);
+                    let stream = respan_token_stream(g.stream(), span.clone());
                     *g = Group::new(g.delimiter(), stream);
                     g.set_span(span);
                 }
@@ -250,14 +250,14 @@ impl LitStr {
         // original literal's span.
         let span = self.span();
         let mut tokens = TokenStream::from_str(&self.value())?;
-        tokens = respan_token_stream(tokens, span);
+        tokens = respan_token_stream(tokens, span.clone());
 
-        let result = crate::parse::parse_scoped(parser, span, tokens)?;
+        let result = crate::parse::parse_scoped(parser, span.clone(), tokens)?;
 
         let suffix = self.suffix();
         if !suffix.is_empty() {
             return Err(Error::new(
-                self.span(),
+                self.span().clone(),
                 format!("unexpected suffix `{}` on string literal", suffix),
             ));
         }
@@ -265,7 +265,7 @@ impl LitStr {
         Ok(result)
     }
 
-    pub fn span(&self) -> Span {
+    pub fn span(&self) -> &Span {
         self.repr.token.span()
     }
 
@@ -300,7 +300,7 @@ impl LitByteStr {
         value
     }
 
-    pub fn span(&self) -> Span {
+    pub fn span(&self) -> &Span {
         self.repr.token.span()
     }
 
@@ -335,7 +335,7 @@ impl LitCStr {
         value
     }
 
-    pub fn span(&self) -> Span {
+    pub fn span(&self) -> &Span {
         self.repr.token.span()
     }
 
@@ -370,7 +370,7 @@ impl LitByte {
         value
     }
 
-    pub fn span(&self) -> Span {
+    pub fn span(&self) -> &Span {
         self.repr.token.span()
     }
 
@@ -405,7 +405,7 @@ impl LitChar {
         value
     }
 
-    pub fn span(&self) -> Span {
+    pub fn span(&self) -> &Span {
         self.repr.token.span()
     }
 
@@ -452,8 +452,8 @@ impl LitInt {
     /// in the macro input.
     ///
     /// ```
-    /// use syn::LitInt;
-    /// use syn::parse::{Parse, ParseStream, Result};
+    /// use syn_send::LitInt;
+    /// use syn_send::parse::{Parse, ParseStream, Result};
     ///
     /// struct Port {
     ///     value: u16,
@@ -474,14 +474,14 @@ impl LitInt {
     {
         self.base10_digits()
             .parse()
-            .map_err(|err| Error::new(self.span(), err))
+            .map_err(|err| Error::new(self.span().clone(), err))
     }
 
     pub fn suffix(&self) -> &str {
         &self.repr.suffix
     }
 
-    pub fn span(&self) -> Span {
+    pub fn span(&self) -> &Span {
         self.repr.token.span()
     }
 
@@ -548,14 +548,14 @@ impl LitFloat {
     {
         self.base10_digits()
             .parse()
-            .map_err(|err| Error::new(self.span(), err))
+            .map_err(|err| Error::new(self.span().clone(), err))
     }
 
     pub fn suffix(&self) -> &str {
         &self.repr.suffix
     }
 
-    pub fn span(&self) -> Span {
+    pub fn span(&self) -> &Span {
         self.repr.token.span()
     }
 
@@ -601,8 +601,8 @@ impl LitBool {
         self.value
     }
 
-    pub fn span(&self) -> Span {
-        self.span
+    pub fn span(&self) -> &Span {
+        &self.span
     }
 
     pub fn set_span(&mut self, span: Span) {
@@ -611,7 +611,7 @@ impl LitBool {
 
     pub fn token(&self) -> Ident {
         let s = if self.value { "true" } else { "false" };
-        Ident::new(s, self.span)
+        Ident::new(s, self.span.clone())
     }
 }
 
@@ -893,7 +893,7 @@ pub(crate) mod parsing {
                     if value || ident == "false" {
                         let lit_bool = LitBool {
                             value,
-                            span: ident.span(),
+                            span: ident.span().clone(),
                         };
                         return Ok((Lit::Bool(lit_bool), rest));
                     }
@@ -915,7 +915,7 @@ pub(crate) mod parsing {
     fn parse_negative_lit(neg: Punct, cursor: Cursor) -> Option<(Lit, Cursor)> {
         let (lit, rest) = cursor.literal()?;
 
-        let mut span = neg.span();
+        let mut span = neg.span().clone();
         span = span.join(lit.span()).unwrap_or(span);
 
         let mut repr = lit.to_string();
@@ -1242,7 +1242,7 @@ mod value {
                 b't' | b'f' if repr == "true" || repr == "false" => {
                     return Lit::Bool(LitBool {
                         value: repr == "true",
-                        span: token.span(),
+                        span: token.span().clone(),
                     });
                 }
                 b'(' if repr == "(/*ERROR*/)" => return Lit::Verbatim(token),
@@ -1265,7 +1265,7 @@ mod value {
             }
         }
 
-        pub fn span(&self) -> Span {
+        pub fn span(&self) -> &Span {
             match self {
                 Lit::Str(lit) => lit.span(),
                 Lit::ByteStr(lit) => lit.span(),
@@ -1274,7 +1274,7 @@ mod value {
                 Lit::Char(lit) => lit.span(),
                 Lit::Int(lit) => lit.span(),
                 Lit::Float(lit) => lit.span(),
-                Lit::Bool(lit) => lit.span,
+                Lit::Bool(lit) => &lit.span,
                 Lit::Verbatim(lit) => lit.span(),
             }
         }

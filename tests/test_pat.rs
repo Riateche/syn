@@ -11,9 +11,9 @@ mod debug;
 
 use proc_macro2::{Delimiter, Group, TokenStream, TokenTree};
 use quote::{quote, ToTokens as _};
-use syn::parse::Parser;
-use syn::punctuated::Punctuated;
-use syn::{parse_quote, token, Item, Pat, PatTuple, Stmt, Token};
+use syn_send::parse::Parser;
+use syn_send::punctuated::Punctuated;
+use syn_send::{parse_quote, token, Item, Pat, PatTuple, Stmt, Token};
 
 #[test]
 fn test_pat_ident() {
@@ -35,20 +35,20 @@ fn test_pat_path() {
 fn test_leading_vert() {
     // https://github.com/rust-lang/rust/blob/1.43.0/src/test/ui/or-patterns/remove-leading-vert.rs
 
-    syn::parse_str::<Item>("fn f() {}").unwrap();
-    syn::parse_str::<Item>("fn fun1(| A: E) {}").unwrap_err();
-    syn::parse_str::<Item>("fn fun2(|| A: E) {}").unwrap_err();
+    syn_send::parse_str::<Item>("fn f() {}").unwrap();
+    syn_send::parse_str::<Item>("fn fun1(| A: E) {}").unwrap_err();
+    syn_send::parse_str::<Item>("fn fun2(|| A: E) {}").unwrap_err();
 
-    syn::parse_str::<Stmt>("let | () = ();").unwrap_err();
-    syn::parse_str::<Stmt>("let (| A): E;").unwrap();
-    syn::parse_str::<Stmt>("let (|| A): (E);").unwrap_err();
-    syn::parse_str::<Stmt>("let (| A,): (E,);").unwrap();
-    syn::parse_str::<Stmt>("let [| A]: [E; 1];").unwrap();
-    syn::parse_str::<Stmt>("let [|| A]: [E; 1];").unwrap_err();
-    syn::parse_str::<Stmt>("let TS(| A): TS;").unwrap();
-    syn::parse_str::<Stmt>("let TS(|| A): TS;").unwrap_err();
-    syn::parse_str::<Stmt>("let NS { f: | A }: NS;").unwrap();
-    syn::parse_str::<Stmt>("let NS { f: || A }: NS;").unwrap_err();
+    syn_send::parse_str::<Stmt>("let | () = ();").unwrap_err();
+    syn_send::parse_str::<Stmt>("let (| A): E;").unwrap();
+    syn_send::parse_str::<Stmt>("let (|| A): (E);").unwrap_err();
+    syn_send::parse_str::<Stmt>("let (| A,): (E,);").unwrap();
+    syn_send::parse_str::<Stmt>("let [| A]: [E; 1];").unwrap();
+    syn_send::parse_str::<Stmt>("let [|| A]: [E; 1];").unwrap_err();
+    syn_send::parse_str::<Stmt>("let TS(| A): TS;").unwrap();
+    syn_send::parse_str::<Stmt>("let TS(|| A): TS;").unwrap_err();
+    syn_send::parse_str::<Stmt>("let NS { f: | A }: NS;").unwrap();
+    syn_send::parse_str::<Stmt>("let NS { f: || A }: NS;").unwrap_err();
 }
 
 #[test]

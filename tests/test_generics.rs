@@ -12,7 +12,7 @@ mod snapshot;
 mod debug;
 
 use quote::quote;
-use syn::{
+use syn_send::{
     parse_quote, DeriveInput, GenericParam, Generics, ItemFn, Lifetime, LifetimeParam,
     TypeParamBound, WhereClause, WherePredicate,
 };
@@ -198,14 +198,14 @@ fn test_type_param_bound() {
     "#);
 
     let tokens = quote!(for<> ?Trait);
-    let err = syn::parse2::<TypeParamBound>(tokens).unwrap_err();
+    let err = syn_send::parse2::<TypeParamBound>(tokens).unwrap_err();
     assert_eq!(
         "`for<...>` binder not allowed with `?` trait polarity modifier",
         err.to_string(),
     );
 
     let tokens = quote!(?for<> Trait);
-    let err = syn::parse2::<TypeParamBound>(tokens).unwrap_err();
+    let err = syn_send::parse2::<TypeParamBound>(tokens).unwrap_err();
     assert_eq!(
         "`for<...>` binder not allowed with `?` trait polarity modifier",
         err.to_string(),

@@ -19,8 +19,8 @@
 /// # extern crate proc_macro;
 /// #
 /// use proc_macro::TokenStream;
-/// use syn::{parse_macro_input, Result};
-/// use syn::parse::{Parse, ParseStream};
+/// use syn_send::{parse_macro_input, Result};
+/// use syn_send::parse::{Parse, ParseStream};
 ///
 /// struct MyMacroInput {
 ///     /* ... */
@@ -57,8 +57,8 @@
 /// # extern crate proc_macro;
 /// #
 /// # use proc_macro::TokenStream;
-/// # use syn::{parse_macro_input, Result};
-/// # use syn::parse::ParseStream;
+/// # use syn_send::{parse_macro_input, Result};
+/// # use syn_send::parse::ParseStream;
 /// #
 /// # struct MyMacroInput {}
 /// #
@@ -91,7 +91,7 @@
 /// #
 /// # macro_rules! doc_test {
 /// #     ($variable:ident as $Type:ty) => {
-/// match syn::parse::<$Type>($variable) {
+/// match syn_send::parse::<$Type>($variable) {
 ///     Ok(syntax_tree) => syntax_tree,
 ///     Err(err) => return proc_macro::TokenStream::from(err.to_compile_error()),
 /// }
@@ -99,7 +99,7 @@
 /// # }
 /// #
 /// # fn test(input: proc_macro::TokenStream) -> proc_macro::TokenStream {
-/// #     let _ = doc_test!(input as syn::Ident);
+/// #     let _ = doc_test!(input as syn_send::Ident);
 /// #     proc_macro::TokenStream::new()
 /// # }
 /// ```

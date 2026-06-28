@@ -1001,8 +1001,8 @@ impl<T, P> Pair<T, P> {
     ///
     /// ```
     /// # use proc_macro2::Span;
-    /// # use syn::punctuated::Punctuated;
-    /// # use syn::{parse_quote, Token, TypeParamBound};
+    /// # use syn_send::punctuated::Punctuated;
+    /// # use syn_send::{parse_quote, Token, TypeParamBound};
     /// #
     /// # let mut punctuated = Punctuated::<TypeParamBound, Token![+]>::new();
     /// # let span = Span::call_site();

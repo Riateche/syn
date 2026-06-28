@@ -12,7 +12,7 @@ mod debug;
 #[test]
 fn test_basic() {
     let content = "#!/usr/bin/env rustx\nfn main() {}";
-    let file = syn::parse_file(content).unwrap();
+    let file = syn_send::parse_file(content).unwrap();
     snapshot!(file, @r##"
     File {
         shebang: Some("#!/usr/bin/env rustx"),
@@ -36,7 +36,7 @@ fn test_basic() {
 #[test]
 fn test_comment() {
     let content = "#!//am/i/a/comment\n[allow(dead_code)] fn main() {}";
-    let file = syn::parse_file(content).unwrap();
+    let file = syn_send::parse_file(content).unwrap();
     snapshot!(file, @r#"
     File {
         attrs: [

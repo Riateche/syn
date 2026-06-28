@@ -4,12 +4,12 @@
     clippy::uninlined_format_args
 )]
 
-use syn::punctuated::{Pair, Punctuated};
-use syn::Token;
+use syn_send::punctuated::{Pair, Punctuated};
+use syn_send::Token;
 
 macro_rules! punctuated {
     ($($e:expr,)+) => {{
-        let mut seq = ::syn::punctuated::Punctuated::new();
+        let mut seq = ::syn_send::punctuated::Punctuated::new();
         $(
             seq.push($e);
         )+
@@ -87,6 +87,6 @@ fn may_dangle() {
 #[test]
 #[should_panic = "index out of bounds: the len is 0 but the index is 0"]
 fn index_out_of_bounds() {
-    let p = Punctuated::<syn::Ident, Token![,]>::new();
+    let p = Punctuated::<syn_send::Ident, Token![,]>::new();
     let _ = p[0].clone();
 }

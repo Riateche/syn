@@ -82,7 +82,7 @@ fn test(path: &Path, failed: &AtomicUsize, abort_after: usize) {
 
     let (back, elapsed) = match panic::catch_unwind(|| {
         let start = Instant::now();
-        let result = syn::parse_file(&content);
+        let result = syn_send::parse_file(&content);
         let elapsed = start.elapsed();
         result.map(|krate| (quote!(#krate).to_string(), elapsed))
     }) {

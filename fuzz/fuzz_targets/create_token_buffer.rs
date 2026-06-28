@@ -3,10 +3,10 @@
 use libfuzzer_sys::fuzz_target;
 use proc_macro2::Span;
 use std::str;
-use syn::parse::{ParseStream, Parser};
+use syn_send::parse::{ParseStream, Parser};
 
-fn immediate_fail(_input: ParseStream) -> syn::Result<()> {
-    Err(syn::Error::new(Span::call_site(), ""))
+fn immediate_fail(_input: ParseStream) -> syn_send::Result<()> {
+    Err(syn_send::Error::new(Span::call_site(), ""))
 }
 
 fuzz_target!(|data: &[u8]| {

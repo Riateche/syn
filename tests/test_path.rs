@@ -11,7 +11,7 @@ mod debug;
 
 use proc_macro2::{Delimiter, Group, Ident, Punct, Spacing, Span, TokenStream, TokenTree};
 use quote::{quote, ToTokens};
-use syn::{parse_quote, Expr, Type, TypePath};
+use syn_send::{parse_quote, Expr, Type, TypePath};
 
 #[test]
 fn parse_interpolated_leading_component() {

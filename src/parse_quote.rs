@@ -10,7 +10,7 @@
 ///
 /// ```
 /// use quote::quote;
-/// use syn::{parse_quote, Stmt};
+/// use syn_send::{parse_quote, Stmt};
 ///
 /// fn main() {
 ///     let name = quote!(v);
@@ -33,7 +33,7 @@
 /// parameter `T` in the input generics.
 ///
 /// ```
-/// use syn::{parse_quote, Generics, GenericParam};
+/// use syn_send::{parse_quote, Generics, GenericParam};
 ///
 /// // Add a bound `T: HeapSize` to every type parameter T.
 /// fn add_trait_bounds(mut generics: Generics) -> Generics {
@@ -91,8 +91,8 @@ macro_rules! parse_quote {
 ///
 /// ```
 /// use quote::{quote, quote_spanned};
-/// use syn::spanned::Spanned;
-/// use syn::{parse_quote_spanned, ReturnType, Signature};
+/// use syn_send::spanned::Spanned;
+/// use syn_send::{parse_quote_spanned, ReturnType, Signature};
 ///
 /// // Changes `fn()` to `fn() -> Pin<Box<dyn Future<Output = ()>>>`,
 /// // and `fn() -> T` to `fn() -> Pin<Box<dyn Future<Output = T>>>`,

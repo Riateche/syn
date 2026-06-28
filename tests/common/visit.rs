@@ -1,7 +1,7 @@
 use proc_macro2::{Delimiter, Group, TokenStream, TokenTree};
 use std::mem;
-use syn::visit_mut::{self, VisitMut};
-use syn::{Expr, File, Generics, LifetimeParam, MacroDelimiter, Stmt, StmtMacro, TypeParam};
+use syn_send::visit_mut::{self, VisitMut};
+use syn_send::{Expr, File, Generics, LifetimeParam, MacroDelimiter, Stmt, StmtMacro, TypeParam};
 
 pub struct FlattenParens {
     discard_paren_attrs: bool,

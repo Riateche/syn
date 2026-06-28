@@ -23,9 +23,9 @@ use crate::common::visit::{AsIfPrinted, FlattenParens};
 use proc_macro2::{Delimiter, Group, Ident, Span, TokenStream};
 use quote::{quote, ToTokens as _};
 use std::process::ExitCode;
-use syn::punctuated::Punctuated;
-use syn::visit_mut::VisitMut as _;
-use syn::{
+use syn_send::punctuated::Punctuated;
+use syn_send::visit_mut::VisitMut as _;
+use syn_send::{
     parse_quote, token, AngleBracketedGenericArguments, Arm, BinOp, Block, Expr, ExprArray,
     ExprAssign, ExprAsync, ExprAwait, ExprBinary, ExprBlock, ExprBreak, ExprCall, ExprCast,
     ExprClosure, ExprConst, ExprContinue, ExprField, ExprForLoop, ExprIf, ExprIndex, ExprLet,
@@ -111,7 +111,7 @@ fn test_tuple_multi_index() {
         "tuple.0. 0",
         "tuple . 0 . 0",
     ] {
-        assert_eq!(expected, syn::parse_str(input).unwrap());
+        assert_eq!(expected, syn_send::parse_str(input).unwrap());
     }
 
     for tokens in [
@@ -122,7 +122,7 @@ fn test_tuple_multi_index() {
         quote!(tuple.0. 0),
         quote!(tuple . 0 . 0),
     ] {
-        assert_eq!(expected, syn::parse2(tokens).unwrap());
+        assert_eq!(expected, syn_send::parse2(tokens).unwrap());
     }
 }
 
@@ -354,26 +354,26 @@ fn test_closure_vs_rangefull() {
 
 #[test]
 fn test_postfix_operator_after_cast() {
-    syn::parse_str::<Expr>("|| &x as T[0]").unwrap_err();
-    syn::parse_str::<Expr>("|| () as ()()").unwrap_err();
+    syn_send::parse_str::<Expr>("|| &x as T[0]").unwrap_err();
+    syn_send::parse_str::<Expr>("|| () as ()()").unwrap_err();
 }
 
 #[test]
 fn test_range_kinds() {
-    syn::parse_str::<Expr>("..").unwrap();
-    syn::parse_str::<Expr>("..hi").unwrap();
-    syn::parse_str::<Expr>("lo..").unwrap();
-    syn::parse_str::<Expr>("lo..hi").unwrap();
+    syn_send::parse_str::<Expr>("..").unwrap();
+    syn_send::parse_str::<Expr>("..hi").unwrap();
+    syn_send::parse_str::<Expr>("lo..").unwrap();
+    syn_send::parse_str::<Expr>("lo..hi").unwrap();
 
-    syn::parse_str::<Expr>("..=").unwrap_err();
-    syn::parse_str::<Expr>("..=hi").unwrap();
-    syn::parse_str::<Expr>("lo..=").unwrap_err();
-    syn::parse_str::<Expr>("lo..=hi").unwrap();
+    syn_send::parse_str::<Expr>("..=").unwrap_err();
+    syn_send::parse_str::<Expr>("..=hi").unwrap();
+    syn_send::parse_str::<Expr>("lo..=").unwrap_err();
+    syn_send::parse_str::<Expr>("lo..=hi").unwrap();
 
-    syn::parse_str::<Expr>("...").unwrap_err();
-    syn::parse_str::<Expr>("...hi").unwrap_err();
-    syn::parse_str::<Expr>("lo...").unwrap_err();
-    syn::parse_str::<Expr>("lo...hi").unwrap_err();
+    syn_send::parse_str::<Expr>("...").unwrap_err();
+    syn_send::parse_str::<Expr>("...hi").unwrap_err();
+    syn_send::parse_str::<Expr>("lo...").unwrap_err();
+    syn_send::parse_str::<Expr>("lo...hi").unwrap_err();
 }
 
 #[test]
@@ -423,15 +423,15 @@ fn test_range_precedence() {
     // A range with a lower bound cannot be the upper bound of another range,
     // and a range with an upper bound cannot be the lower bound of another
     // range.
-    syn::parse_str::<Expr>(".. x ..").unwrap_err();
-    syn::parse_str::<Expr>("x .. x ..").unwrap_err();
+    syn_send::parse_str::<Expr>(".. x ..").unwrap_err();
+    syn_send::parse_str::<Expr>("x .. x ..").unwrap_err();
 }
 
 #[test]
 fn test_range_attrs() {
     // Attributes are not allowed on range expressions starting with `..`
-    syn::parse_str::<Expr>("#[allow()] ..").unwrap_err();
-    syn::parse_str::<Expr>("#[allow()] .. hi").unwrap_err();
+    syn_send::parse_str::<Expr>("#[allow()] ..").unwrap_err();
+    syn_send::parse_str::<Expr>("#[allow()] .. hi").unwrap_err();
 
     snapshot!("#[allow()] lo .. hi" as Expr, @r#"
     Expr::Range {
@@ -476,8 +476,8 @@ fn test_range_attrs() {
 
 #[test]
 fn test_ranges_bailout() {
-    syn::parse_str::<Expr>(".. ?").unwrap_err();
-    syn::parse_str::<Expr>(".. .field").unwrap_err();
+    syn_send::parse_str::<Expr>(".. ?").unwrap_err();
+    syn_send::parse_str::<Expr>(".. .field").unwrap_err();
 
     snapshot!("return .. ?" as Expr, @r"
     Expr::Try {
@@ -584,7 +584,7 @@ fn test_ambiguous_label() {
             break 'outer 'inner: loop { break 'inner 42; };
         },
     ] {
-        syn::parse2::<Stmt>(stmt).unwrap();
+        syn_send::parse2::<Stmt>(stmt).unwrap();
     }
 
     for stmt in [
@@ -593,7 +593,7 @@ fn test_ambiguous_label() {
             break 'label: loop { break 'label 42; };
         },
     ] {
-        syn::parse2::<Stmt>(stmt).unwrap_err();
+        syn_send::parse2::<Stmt>(stmt).unwrap_err();
     }
 }
 
@@ -788,7 +788,7 @@ fn test_binop_associativity() {
     "#);
 
     // Parenthesization is required.
-    syn::parse_str::<Expr>("() == () == ()").unwrap_err();
+    syn_send::parse_str::<Expr>("() == () == ()").unwrap_err();
 }
 
 #[test]
@@ -818,24 +818,24 @@ fn test_assign_range_precedence() {
     }
     "#);
 
-    syn::parse_str::<Expr>("() .. () = ()").unwrap_err();
-    syn::parse_str::<Expr>("() .. () += ()").unwrap_err();
+    syn_send::parse_str::<Expr>("() .. () = ()").unwrap_err();
+    syn_send::parse_str::<Expr>("() .. () += ()").unwrap_err();
 }
 
 #[test]
 fn test_chained_comparison() {
     // https://github.com/dtolnay/syn/issues/1738
-    let _ = syn::parse_str::<Expr>("a = a < a <");
-    let _ = syn::parse_str::<Expr>("a = a .. a ..");
-    let _ = syn::parse_str::<Expr>("a = a .. a +=");
+    let _ = syn_send::parse_str::<Expr>("a = a < a <");
+    let _ = syn_send::parse_str::<Expr>("a = a .. a ..");
+    let _ = syn_send::parse_str::<Expr>("a = a .. a +=");
 
-    let err = syn::parse_str::<Expr>("a < a < a").unwrap_err();
+    let err = syn_send::parse_str::<Expr>("a < a < a").unwrap_err();
     assert_eq!("comparison operators cannot be chained", err.to_string());
 
-    let err = syn::parse_str::<Expr>("a .. a .. a").unwrap_err();
+    let err = syn_send::parse_str::<Expr>("a .. a .. a").unwrap_err();
     assert_eq!("unexpected token", err.to_string());
 
-    let err = syn::parse_str::<Expr>("a .. a += a").unwrap_err();
+    let err = syn_send::parse_str::<Expr>("a .. a += a").unwrap_err();
     assert_eq!("unexpected token", err.to_string());
 }
 
@@ -890,11 +890,11 @@ fn test_fixup() {
         quote! { 1 + (return)..=1 + return },
         quote! { .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. },
     ] {
-        let original: Expr = syn::parse2(tokens).unwrap();
+        let original: Expr = syn_send::parse2(tokens).unwrap();
 
         let mut flat = original.clone();
         FlattenParens::combine_attrs().visit_expr_mut(&mut flat);
-        let reconstructed: Expr = match syn::parse2(flat.to_token_stream()) {
+        let reconstructed: Expr = match syn_send::parse2(flat.to_token_stream()) {
             Ok(reconstructed) => reconstructed,
             Err(err) => panic!("failed to parse `{}`: {}", flat.to_token_stream(), err),
         };
@@ -1662,7 +1662,7 @@ fn test_permutations() -> ExitCode {
     }
     let mut assert = |mut original: Expr| {
         let tokens = original.to_token_stream();
-        let Ok(mut parsed) = syn::parse2::<Expr>(tokens.clone()) else {
+        let Ok(mut parsed) = syn_send::parse2::<Expr>(tokens.clone()) else {
             fail!(
                 "failed to parse: {}\n{:#?}",
                 tokens,
@@ -1683,7 +1683,7 @@ fn test_permutations() -> ExitCode {
         let mut tokens_no_paren = tokens.clone();
         FlattenParens::visit_token_stream_mut(&mut tokens_no_paren);
         if tokens.to_string() != tokens_no_paren.to_string() {
-            if let Ok(mut parsed2) = syn::parse2::<Expr>(tokens_no_paren) {
+            if let Ok(mut parsed2) = syn_send::parse2::<Expr>(tokens_no_paren) {
                 FlattenParens::combine_attrs().visit_expr_mut(&mut parsed2);
                 if original == parsed2 {
                     fail!("redundant parens: {}", tokens);

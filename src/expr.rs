@@ -46,7 +46,7 @@ ast_enum_of_structs! {
     /// are designed to be traversed using the following rebinding idiom.
     ///
     /// ```
-    /// # use syn::Expr;
+    /// # use syn_send::Expr;
     /// #
     /// # fn example(expr: Expr) {
     /// # const IGNORE: &str = stringify! {
@@ -80,7 +80,7 @@ ast_enum_of_structs! {
     /// This approach avoids repeating the variant names twice on every line.
     ///
     /// ```
-    /// # use syn::{Expr, ExprMethodCall};
+    /// # use syn_send::{Expr, ExprMethodCall};
     /// #
     /// # fn example(expr: Expr) {
     /// // Repetitive; recommend not doing this.
@@ -96,7 +96,7 @@ ast_enum_of_structs! {
     /// be a suitable name for the complete syntax tree enum type.
     ///
     /// ```
-    /// # use syn::{Expr, ExprField};
+    /// # use syn_send::{Expr, ExprField};
     /// #
     /// # fn example(discriminant: ExprField) {
     /// // Binding is called `base` which is the name I would use if I were
@@ -721,7 +721,7 @@ impl Expr {
     /// ```
     /// use core::mem;
     /// use quote::ToTokens;
-    /// use syn::{parse_quote, Expr};
+    /// use syn_send::{parse_quote, Expr};
     ///
     /// fn unparenthesize(e: &mut Expr) {
     ///     while let Expr::Paren(paren) = e {
@@ -1030,10 +1030,10 @@ impl IdentFragment for Member {
         }
     }
 
-    fn span(&self) -> Option<Span> {
+    fn span(&self) -> Option<&Span> {
         match self {
             Member::Named(m) => Some(m.span()),
-            Member::Unnamed(m) => Some(m.span),
+            Member::Unnamed(m) => Some(&m.span),
         }
     }
 }
@@ -1087,8 +1087,8 @@ impl IdentFragment for Index {
         Display::fmt(&self.index, formatter)
     }
 
-    fn span(&self) -> Option<Span> {
-        Some(self.span)
+    fn span(&self) -> Option<&Span> {
+        Some(&self.span)
     }
 }
 
@@ -1151,6 +1151,7 @@ ast_struct! {
 ast_enum! {
     /// Limit types of a range, inclusive or exclusive.
     #[cfg_attr(docsrs, doc(cfg(feature = "full")))]
+    #[cfg_attr(feature = "clone-impls", derive(Clone))]
     pub enum RangeLimits {
         /// Inclusive at the beginning, exclusive at the end.
         HalfOpen(Token![..]),
@@ -1612,8 +1613,8 @@ pub(crate) mod parsing {
                     RangeLimits::Closed(limits) => &limits.spans,
                 };
                 return Err(crate::error::new2(
-                    spans[0],
-                    *spans.last().unwrap(),
+                    spans[0].clone(),
+                    spans.last().unwrap().clone(),
                     "attributes are not allowed on range expressions starting with `..`",
                 ));
             }
@@ -3042,11 +3043,14 @@ pub(crate) mod parsing {
                     index: lit
                         .base10_digits()
                         .parse()
-                        .map_err(|err| Error::new(lit.span(), err))?,
-                    span: lit.span(),
+                        .map_err(|err| Error::new(lit.span().clone(), err))?,
+                    span: lit.span().clone(),
                 })
             } else {
-                Err(Error::new(lit.span(), "expected unsuffixed integer"))
+                Err(Error::new(
+                    lit.span().clone(),
+                    "expected unsuffixed integer",
+                ))
             }
         }
     }
@@ -3063,21 +3067,23 @@ pub(crate) mod parsing {
         let mut offset = 0;
         for part in float_repr.split('.') {
             let mut index: Index =
-                crate::parse_str(part).map_err(|err| Error::new(float_span, err))?;
+                crate::parse_str(part).map_err(|err| Error::new(float_span.clone(), err))?;
             let part_end = offset + part.len();
-            index.span = float_token.subspan(offset..part_end).unwrap_or(float_span);
+            index.span = float_token
+                .subspan(offset..part_end)
+                .unwrap_or_else(|| float_span.clone());
 
             let base = mem::replace(e, Expr::PLACEHOLDER);
             *e = Expr::Field(ExprField {
                 attrs: Vec::new(),
                 base: Box::new(base),
-                dot_token: Token![.](dot_token.span),
+                dot_token: Token![.](dot_token.span.clone()),
                 member: Member::Unnamed(index),
             });
 
             let dot_span = float_token
                 .subspan(part_end..part_end + 1)
-                .unwrap_or(float_span);
+                .unwrap_or_else(|| float_span.clone());
             *dot_token = Token![.](dot_span);
             offset = part_end + 1;
         }
@@ -4131,7 +4137,7 @@ pub(crate) mod printing {
     impl ToTokens for Index {
         fn to_tokens(&self, tokens: &mut TokenStream) {
             let mut lit = Literal::i64_unsuffixed(i64::from(self.index));
-            lit.set_span(self.span);
+            lit.set_span(self.span.clone());
             tokens.append(lit);
         }
     }

@@ -959,8 +959,7 @@ where
 pub fn visit_angle_bracketed_generic_arguments<'ast, V>(
     v: &mut V,
     node: &'ast crate::AngleBracketedGenericArguments,
-)
-where
+) where
     V: Visit<'ast> + ?Sized,
 {
     skip!(node.colon2_token);
@@ -2167,10 +2166,7 @@ where
 }
 #[cfg(feature = "full")]
 #[cfg_attr(docsrs, doc(cfg(feature = "full")))]
-pub fn visit_foreign_item_static<'ast, V>(
-    v: &mut V,
-    node: &'ast crate::ForeignItemStatic,
-)
+pub fn visit_foreign_item_static<'ast, V>(v: &mut V, node: &'ast crate::ForeignItemStatic)
 where
     V: Visit<'ast> + ?Sized,
 {
@@ -2265,7 +2261,7 @@ pub fn visit_ident<'ast, V>(v: &mut V, node: &'ast proc_macro2::Ident)
 where
     V: Visit<'ast> + ?Sized,
 {
-    v.visit_span(&node.span());
+    v.visit_span(node.span());
 }
 #[cfg(feature = "full")]
 #[cfg_attr(docsrs, doc(cfg(feature = "full")))]
@@ -2781,31 +2777,38 @@ where
 pub fn visit_lit_byte<'ast, V>(v: &mut V, node: &'ast crate::LitByte)
 where
     V: Visit<'ast> + ?Sized,
-{}
+{
+}
 pub fn visit_lit_byte_str<'ast, V>(v: &mut V, node: &'ast crate::LitByteStr)
 where
     V: Visit<'ast> + ?Sized,
-{}
+{
+}
 pub fn visit_lit_cstr<'ast, V>(v: &mut V, node: &'ast crate::LitCStr)
 where
     V: Visit<'ast> + ?Sized,
-{}
+{
+}
 pub fn visit_lit_char<'ast, V>(v: &mut V, node: &'ast crate::LitChar)
 where
     V: Visit<'ast> + ?Sized,
-{}
+{
+}
 pub fn visit_lit_float<'ast, V>(v: &mut V, node: &'ast crate::LitFloat)
 where
     V: Visit<'ast> + ?Sized,
-{}
+{
+}
 pub fn visit_lit_int<'ast, V>(v: &mut V, node: &'ast crate::LitInt)
 where
     V: Visit<'ast> + ?Sized,
-{}
+{
+}
 pub fn visit_lit_str<'ast, V>(v: &mut V, node: &'ast crate::LitStr)
 where
     V: Visit<'ast> + ?Sized,
-{}
+{
+}
 #[cfg(feature = "full")]
 #[cfg_attr(docsrs, doc(cfg(feature = "full")))]
 pub fn visit_local<'ast, V>(v: &mut V, node: &'ast crate::Local)
@@ -2922,8 +2925,7 @@ where
 pub fn visit_parenthesized_generic_arguments<'ast, V>(
     v: &mut V,
     node: &'ast crate::ParenthesizedGenericArguments,
-)
-where
+) where
     V: Visit<'ast> + ?Sized,
 {
     skip!(node.paren_token);
@@ -3340,7 +3342,8 @@ where
 pub fn visit_span<'ast, V>(v: &mut V, node: &proc_macro2::Span)
 where
     V: Visit<'ast> + ?Sized,
-{}
+{
+}
 #[cfg(feature = "full")]
 #[cfg_attr(docsrs, doc(cfg(feature = "full")))]
 pub fn visit_static_mutability<'ast, V>(v: &mut V, node: &'ast crate::StaticMutability)
@@ -3403,10 +3406,7 @@ where
 }
 #[cfg(any(feature = "derive", feature = "full"))]
 #[cfg_attr(docsrs, doc(cfg(any(feature = "derive", feature = "full"))))]
-pub fn visit_trait_bound_modifier<'ast, V>(
-    v: &mut V,
-    node: &'ast crate::TraitBoundModifier,
-)
+pub fn visit_trait_bound_modifier<'ast, V>(v: &mut V, node: &'ast crate::TraitBoundModifier)
 where
     V: Visit<'ast> + ?Sized,
 {

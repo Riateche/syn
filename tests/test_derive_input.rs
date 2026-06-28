@@ -13,7 +13,7 @@ mod snapshot;
 mod debug;
 
 use quote::quote;
-use syn::{Data, DeriveInput};
+use syn_send::{Data, DeriveInput};
 
 #[test]
 fn test_unit() {
@@ -354,7 +354,7 @@ fn test_attr_with_non_mod_style_path() {
         struct S;
     };
 
-    syn::parse2::<DeriveInput>(input).unwrap_err();
+    syn_send::parse2::<DeriveInput>(input).unwrap_err();
 }
 
 #[test]

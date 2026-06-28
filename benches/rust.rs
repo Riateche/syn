@@ -44,7 +44,7 @@ mod syn_parse {
     use std::path::Path;
 
     pub fn bench(_path: &Path, content: &str) -> Result<(), ()> {
-        syn::parse_file(content).map(drop).map_err(drop)
+        syn_send::parse_file(content).map(drop).map_err(drop)
     }
 }
 

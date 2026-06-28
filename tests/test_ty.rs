@@ -11,17 +11,17 @@ mod debug;
 
 use proc_macro2::{Delimiter, Group, Ident, Punct, Spacing, Span, TokenStream, TokenTree};
 use quote::{quote, ToTokens as _};
-use syn::punctuated::Punctuated;
-use syn::{parse_quote, token, Token, Type, TypeTuple};
+use syn_send::punctuated::Punctuated;
+use syn_send::{parse_quote, token, Token, Type, TypeTuple};
 
 #[test]
 fn test_mut_self() {
-    syn::parse_str::<Type>("fn(mut self)").unwrap();
-    syn::parse_str::<Type>("fn(mut self,)").unwrap();
-    syn::parse_str::<Type>("fn(mut self: ())").unwrap();
-    syn::parse_str::<Type>("fn(mut self: ...)").unwrap_err();
-    syn::parse_str::<Type>("fn(mut self: mut self)").unwrap_err();
-    syn::parse_str::<Type>("fn(mut self::T)").unwrap_err();
+    syn_send::parse_str::<Type>("fn(mut self)").unwrap();
+    syn_send::parse_str::<Type>("fn(mut self,)").unwrap();
+    syn_send::parse_str::<Type>("fn(mut self: ())").unwrap();
+    syn_send::parse_str::<Type>("fn(mut self: ...)").unwrap_err();
+    syn_send::parse_str::<Type>("fn(mut self: mut self)").unwrap_err();
+    syn_send::parse_str::<Type>("fn(mut self::T)").unwrap_err();
 }
 
 #[test]
@@ -284,8 +284,8 @@ fn test_trait_object() {
     "#);
 
     // None of the following are valid Rust types.
-    syn::parse_str::<Type>("for<'a> dyn Trait<'a>").unwrap_err();
-    syn::parse_str::<Type>("dyn for<'a> 'a + Trait").unwrap_err();
+    syn_send::parse_str::<Type>("for<'a> dyn Trait<'a>").unwrap_err();
+    syn_send::parse_str::<Type>("dyn for<'a> 'a + Trait").unwrap_err();
 }
 
 #[test]

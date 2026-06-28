@@ -770,9 +770,11 @@ pub(crate) mod parsing {
             match value {
                 Pat::Range(pat) if pat.start.is_none() || pat.end.is_none() => {
                     let (start, end) = match pat.limits {
-                        RangeLimits::HalfOpen(dot_dot) => (dot_dot.spans[0], dot_dot.spans[1]),
+                        RangeLimits::HalfOpen(dot_dot) => {
+                            (dot_dot.spans[0].clone(), dot_dot.spans[1].clone())
+                        }
                         RangeLimits::Closed(dot_dot_eq) => {
-                            (dot_dot_eq.spans[0], dot_dot_eq.spans[2])
+                            (dot_dot_eq.spans[0].clone(), dot_dot_eq.spans[2].clone())
                         }
                     };
                     let msg = "range pattern is not allowed unparenthesized inside slice pattern";

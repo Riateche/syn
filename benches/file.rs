@@ -26,7 +26,7 @@ mod repo;
 use proc_macro2::{Span, TokenStream};
 use std::fs;
 use std::str::FromStr;
-use syn::parse::{ParseStream, Parser};
+use syn_send::parse::{ParseStream, Parser};
 use test::Bencher;
 
 const FILE: &str = "tests/rust/library/core/src/str/mod.rs";
@@ -46,8 +46,8 @@ fn baseline(b: &mut Bencher) {
 #[bench]
 fn create_token_buffer(b: &mut Bencher) {
     let tokens = get_tokens();
-    fn immediate_fail(_input: ParseStream) -> syn::Result<()> {
-        Err(syn::Error::new(Span::call_site(), ""))
+    fn immediate_fail(_input: ParseStream) -> syn_send::Result<()> {
+        Err(syn_send::Error::new(Span::call_site(), ""))
     }
     b.iter(|| immediate_fail.parse2(tokens.clone()));
 }
@@ -55,5 +55,5 @@ fn create_token_buffer(b: &mut Bencher) {
 #[bench]
 fn parse_file(b: &mut Bencher) {
     let tokens = get_tokens();
-    b.iter(|| syn::parse2::<syn::File>(tokens.clone()));
+    b.iter(|| syn_send::parse2::<syn_send::File>(tokens.clone()));
 }

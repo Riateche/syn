@@ -4,7 +4,7 @@
 /// # Usage
 ///
 /// ```
-/// syn::custom_punctuation!(LeftRightArrow, <=>);
+/// syn_send::custom_punctuation!(LeftRightArrow, <=>);
 /// ```
 ///
 /// The generated syntax tree node supports the following operations just like
@@ -32,11 +32,11 @@
 /// ```
 /// use core::iter;
 /// use proc_macro2::{TokenStream, TokenTree};
-/// use syn::parse::{Parse, ParseStream, Peek, Result};
-/// use syn::punctuated::Punctuated;
-/// use syn::Expr;
+/// use syn_send::parse::{Parse, ParseStream, Peek, Result};
+/// use syn_send::punctuated::Punctuated;
+/// use syn_send::Expr;
 ///
-/// syn::custom_punctuation!(PathSeparator, </>);
+/// syn_send::custom_punctuation!(PathSeparator, </>);
 ///
 /// // expr </> expr </> expr ...
 /// struct PathSegments {
@@ -48,13 +48,13 @@
 ///         let mut segments = Punctuated::new();
 ///
 ///         let first = parse_until(input, PathSeparator)?;
-///         segments.push_value(syn::parse2(first)?);
+///         segments.push_value(syn_send::parse2(first)?);
 ///
 ///         while input.peek(PathSeparator) {
 ///             segments.push_punct(input.parse()?);
 ///
 ///             let next = parse_until(input, PathSeparator)?;
-///             segments.push_value(syn::parse2(next)?);
+///             segments.push_value(syn_send::parse2(next)?);
 ///         }
 ///
 ///         Ok(PathSegments { segments })
@@ -72,7 +72,7 @@
 ///
 /// fn main() {
 ///     let input = r#" a::b </> c::d::e "#;
-///     let _: PathSegments = syn::parse_str(input).unwrap();
+///     let _: PathSegments = syn_send::parse_str(input).unwrap();
 /// }
 /// ```
 #[macro_export]

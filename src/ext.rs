@@ -29,12 +29,12 @@ pub trait IdentExt: Sized + private::Sealed {
     /// # Example
     ///
     /// ```
-    /// use syn::{Error, Ident, Result, Token};
-    /// use syn::ext::IdentExt;
-    /// use syn::parse::ParseStream;
+    /// use syn_send::{Error, Ident, Result, Token};
+    /// use syn_send::ext::IdentExt;
+    /// use syn_send::parse::ParseStream;
     ///
     /// mod kw {
-    ///     syn::custom_keyword!(name);
+    ///     syn_send::custom_keyword!(name);
     /// }
     ///
     /// // Parses input that looks like `name = NAME` where `NAME` can be
@@ -84,8 +84,8 @@ pub trait IdentExt: Sized + private::Sealed {
     ///
     /// ```
     /// use proc_macro2::Span;
-    /// use syn::Ident;
-    /// use syn::ext::IdentExt;
+    /// use syn_send::Ident;
+    /// use syn_send::ext::IdentExt;
     ///
     /// fn ident_for_getter(variable: &Ident) -> Ident {
     ///     let getter = format!("__pyo3_get_{}", variable.unraw());
@@ -107,7 +107,7 @@ impl IdentExt for Ident {
     fn unraw(&self) -> Ident {
         let string = self.to_string();
         if let Some(string) = string.strip_prefix("r#") {
-            Ident::new(string, self.span())
+            Ident::new(string, self.span().clone())
         } else {
             self.clone()
         }

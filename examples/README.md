@@ -1,6 +1,6 @@
 ### [`dump-syntax`](dump-syntax)
 
-Little utility to parse a Rust source file into a `syn::File` and print out a
+Little utility to parse a Rust source file into a `syn_send::File` and print out a
 debug representation of the syntax tree.
 
 ### [`heapsize`](heapsize)

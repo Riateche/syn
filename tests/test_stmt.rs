@@ -13,12 +13,12 @@ mod debug;
 
 use proc_macro2::{Delimiter, Group, Ident, Span, TokenStream, TokenTree};
 use quote::{quote, ToTokens as _};
-use syn::parse::Parser as _;
-use syn::{Block, Stmt};
+use syn_send::parse::Parser as _;
+use syn_send::{Block, Stmt};
 
 #[test]
 fn test_raw_operator() {
-    let stmt = syn::parse_str::<Stmt>("let _ = &raw const x;").unwrap();
+    let stmt = syn_send::parse_str::<Stmt>("let _ = &raw const x;").unwrap();
 
     snapshot!(stmt, @r#"
     Stmt::Local {
@@ -43,7 +43,7 @@ fn test_raw_operator() {
 
 #[test]
 fn test_raw_variable() {
-    let stmt = syn::parse_str::<Stmt>("let _ = &raw;").unwrap();
+    let stmt = syn_send::parse_str::<Stmt>("let _ = &raw;").unwrap();
 
     snapshot!(stmt, @r#"
     Stmt::Local {
@@ -67,7 +67,7 @@ fn test_raw_variable() {
 
 #[test]
 fn test_raw_invalid() {
-    assert!(syn::parse_str::<Stmt>("let _ = &raw x;").is_err());
+    assert!(syn_send::parse_str::<Stmt>("let _ = &raw x;").is_err());
 }
 
 #[test]

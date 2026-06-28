@@ -13,12 +13,12 @@ Currently this library is geared toward use in Rust procedural macros, but
 contains some APIs that may be useful more generally.
 
 - **Data structures** — Syn provides a complete syntax tree that can represent
-  any valid Rust source code. The syntax tree is rooted at [`syn::File`] which
+  any valid Rust source code. The syntax tree is rooted at [`syn_send::File`] which
   represents a full source file, but there are other entry points that may be
-  useful to procedural macros including [`syn::Item`], [`syn::Expr`] and
-  [`syn::Type`].
+  useful to procedural macros including [`syn_send::Item`], [`syn_send::Expr`] and
+  [`syn_send::Type`].
 
-- **Derives** — Of particular interest to derive macros is [`syn::DeriveInput`]
+- **Derives** — Of particular interest to derive macros is [`syn_send::DeriveInput`]
   which is any of the three legal input items to a derive macro. An example
   below shows using this type in a library that can derive implementations of a
   user-defined trait.
@@ -39,11 +39,11 @@ contains some APIs that may be useful more generally.
   procedural macros enable only what they need, and do not pay in compile time
   for all the rest.
 
-[`syn::File`]: https://docs.rs/syn/2.0/syn/struct.File.html
-[`syn::Item`]: https://docs.rs/syn/2.0/syn/enum.Item.html
-[`syn::Expr`]: https://docs.rs/syn/2.0/syn/enum.Expr.html
-[`syn::Type`]: https://docs.rs/syn/2.0/syn/enum.Type.html
-[`syn::DeriveInput`]: https://docs.rs/syn/2.0/syn/struct.DeriveInput.html
+[`syn_send::File`]: https://docs.rs/syn/2.0/syn/struct.File.html
+[`syn_send::Item`]: https://docs.rs/syn/2.0/syn/enum.Item.html
+[`syn_send::Expr`]: https://docs.rs/syn/2.0/syn/enum.Expr.html
+[`syn_send::Type`]: https://docs.rs/syn/2.0/syn/enum.Type.html
+[`syn_send::DeriveInput`]: https://docs.rs/syn/2.0/syn/struct.DeriveInput.html
 [parser functions]: https://docs.rs/syn/2.0/syn/parse/index.html
 
 [*Release notes*](https://github.com/dtolnay/syn/releases)
@@ -84,7 +84,7 @@ proc-macro = true
 ```rust
 use proc_macro::TokenStream;
 use quote::quote;
-use syn::{parse_macro_input, DeriveInput};
+use syn_send::{parse_macro_input, DeriveInput};
 
 #[proc_macro_derive(MyMacro)]
 pub fn my_macro(input: TokenStream) -> TokenStream {

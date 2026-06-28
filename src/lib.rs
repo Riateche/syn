@@ -14,12 +14,12 @@
 //!
 //! - **Data structures** — Syn provides a complete syntax tree that can
 //!   represent any valid Rust source code. The syntax tree is rooted at
-//!   [`syn::File`] which represents a full source file, but there are other
+//!   [`syn_send::File`] which represents a full source file, but there are other
 //!   entry points that may be useful to procedural macros including
-//!   [`syn::Item`], [`syn::Expr`] and [`syn::Type`].
+//!   [`syn_send::Item`], [`syn_send::Expr`] and [`syn_send::Type`].
 //!
 //! - **Derives** — Of particular interest to derive macros is
-//!   [`syn::DeriveInput`] which is any of the three legal input items to a
+//!   [`syn_send::DeriveInput`] which is any of the three legal input items to a
 //!   derive macro. An example below shows using this type in a library that can
 //!   derive implementations of a user-defined trait.
 //!
@@ -39,11 +39,11 @@
 //!   procedural macros enable only what they need, and do not pay in compile
 //!   time for all the rest.
 //!
-//! [`syn::File`]: File
-//! [`syn::Item`]: Item
-//! [`syn::Expr`]: Expr
-//! [`syn::Type`]: Type
-//! [`syn::DeriveInput`]: DeriveInput
+//! [`syn_send::File`]: File
+//! [`syn_send::Item`]: Item
+//! [`syn_send::Expr`]: Expr
+//! [`syn_send::Type`]: Type
+//! [`syn_send::DeriveInput`]: DeriveInput
 //! [parser functions]: mod@parse
 //!
 //! <br>
@@ -74,7 +74,7 @@
 //! #
 //! use proc_macro::TokenStream;
 //! use quote::quote;
-//! use syn::{parse_macro_input, DeriveInput};
+//! use syn_send::{parse_macro_input, DeriveInput};
 //!
 //! # const IGNORE_TOKENS: &str = stringify! {
 //! #[proc_macro_derive(MyMacro)]
@@ -314,7 +314,7 @@
 extern crate alloc;
 extern crate std;
 
-extern crate self as syn;
+extern crate self as syn_send;
 
 #[cfg(feature = "proc-macro")]
 extern crate proc_macro;
@@ -531,8 +531,6 @@ mod stmt;
 #[cfg_attr(docsrs, doc(cfg(feature = "full")))]
 pub use crate::stmt::{Block, Local, LocalInit, Stmt, StmtMacro};
 
-mod thread;
-
 #[cfg(all(any(feature = "full", feature = "derive"), feature = "extra-traits"))]
 mod tt;
 
@@ -564,7 +562,7 @@ mod gen {
     /// [`Fold`]: fold::Fold
     ///
     /// ```
-    /// # use syn::{Attribute, BinOp, Expr, ExprBinary};
+    /// # use syn_send::{Attribute, BinOp, Expr, ExprBinary};
     /// #
     /// pub trait Fold {
     ///     /* ... */
@@ -610,8 +608,8 @@ mod gen {
     /// // syn = { version = "2.0", features = ["fold", "full"] }
     ///
     /// use quote::quote;
-    /// use syn::fold::{fold_expr, Fold};
-    /// use syn::{token, Expr, ExprParen};
+    /// use syn_send::fold::{fold_expr, Fold};
+    /// use syn_send::{token, Expr, ExprParen};
     ///
     /// struct ParenthesizeEveryExpr;
     ///
@@ -627,7 +625,7 @@ mod gen {
     ///
     /// fn main() {
     ///     let code = quote! { a() + b(1) * c.d };
-    ///     let expr: Expr = syn::parse2(code).unwrap();
+    ///     let expr: Expr = syn_send::parse2(code).unwrap();
     ///     let parenthesized = ParenthesizeEveryExpr.fold_expr(expr);
     ///     println!("{}", quote!(#parenthesized));
     ///
@@ -649,7 +647,7 @@ mod gen {
     /// [`Visit`]: visit::Visit
     ///
     /// ```
-    /// # use syn::{Attribute, BinOp, Expr, ExprBinary};
+    /// # use syn_send::{Attribute, BinOp, Expr, ExprBinary};
     /// #
     /// pub trait Visit<'ast> {
     ///     /* ... */
@@ -692,8 +690,8 @@ mod gen {
     /// // syn = { version = "2.0", features = ["full", "visit"] }
     ///
     /// use quote::quote;
-    /// use syn::visit::{self, Visit};
-    /// use syn::{File, ItemFn};
+    /// use syn_send::visit::{self, Visit};
+    /// use syn_send::{File, ItemFn};
     ///
     /// struct FnVisitor;
     ///
@@ -713,7 +711,7 @@ mod gen {
     ///         }
     ///     };
     ///
-    ///     let syntax_tree: File = syn::parse2(code).unwrap();
+    ///     let syntax_tree: File = syn_send::parse2(code).unwrap();
     ///     FnVisitor.visit_file(&syntax_tree);
     /// }
     /// ```
@@ -724,8 +722,8 @@ mod gen {
     ///
     /// ```
     /// use quote::quote;
-    /// use syn::visit::{self, Visit};
-    /// use syn::{File, ItemFn};
+    /// use syn_send::visit::{self, Visit};
+    /// use syn_send::{File, ItemFn};
     ///
     /// struct FnVisitor<'ast> {
     ///     functions: Vec<&'ast ItemFn>,
@@ -745,7 +743,7 @@ mod gen {
     ///         }
     ///     };
     ///
-    ///     let syntax_tree: File = syn::parse2(code).unwrap();
+    ///     let syntax_tree: File = syn_send::parse2(code).unwrap();
     ///     let mut visitor = FnVisitor { functions: Vec::new() };
     ///     visitor.visit_file(&syntax_tree);
     ///     for f in visitor.functions {
@@ -769,7 +767,7 @@ mod gen {
     /// [`VisitMut`]: visit_mut::VisitMut
     ///
     /// ```
-    /// # use syn::{Attribute, BinOp, Expr, ExprBinary};
+    /// # use syn_send::{Attribute, BinOp, Expr, ExprBinary};
     /// #
     /// pub trait VisitMut {
     ///     /* ... */
@@ -812,8 +810,8 @@ mod gen {
     /// // syn = { version = "2.0", features = ["full", "visit-mut"] }
     ///
     /// use quote::quote;
-    /// use syn::visit_mut::{self, VisitMut};
-    /// use syn::{parse_quote, Expr, File, Lit, LitInt};
+    /// use syn_send::visit_mut::{self, VisitMut};
+    /// use syn_send::{parse_quote, Expr, File, Lit, LitInt};
     ///
     /// struct BigintReplace;
     ///
@@ -823,7 +821,7 @@ mod gen {
     ///             if let Lit::Int(int) = &expr.lit {
     ///                 if int.suffix() == "u256" {
     ///                     let digits = int.base10_digits();
-    ///                     let unsuffixed: LitInt = syn::parse_str(digits).unwrap();
+    ///                     let unsuffixed: LitInt = syn_send::parse_str(digits).unwrap();
     ///                     *node = parse_quote!(bigint::u256!(#unsuffixed));
     ///                     return;
     ///                 }
@@ -842,7 +840,7 @@ mod gen {
     ///         }
     ///     };
     ///
-    ///     let mut syntax_tree: File = syn::parse2(code).unwrap();
+    ///     let mut syntax_tree: File = syn_send::parse2(code).unwrap();
     ///     BigintReplace.visit_file_mut(&mut syntax_tree);
     ///     println!("{}", quote!(#syntax_tree));
     /// }
@@ -889,36 +887,15 @@ pub mod __private;
 #[cfg(all(feature = "parsing", feature = "full"))]
 use alloc::string::ToString;
 
-/// Parse tokens of source code into the chosen syntax tree node.
-///
-/// This is preferred over parsing a string because tokens are able to preserve
-/// information about where in the user's code they were originally written (the
-/// "span" of the token), possibly allowing the compiler to produce better error
-/// messages.
-///
-/// This function parses a `proc_macro::TokenStream` which is the type used for
-/// interop with the compiler in a procedural macro. To parse a
-/// `proc_macro2::TokenStream`, use [`syn::parse2`] instead.
-///
-/// [`syn::parse2`]: parse2
-///
-/// This function enforces that the input is fully parsed. If there are any
-/// unparsed tokens at the end of the stream, an error is returned.
-#[cfg(all(feature = "parsing", feature = "proc-macro"))]
-#[cfg_attr(docsrs, doc(cfg(all(feature = "parsing", feature = "proc-macro"))))]
-pub fn parse<T: parse::Parse>(tokens: proc_macro::TokenStream) -> Result<T> {
-    parse::Parser::parse(T::parse, tokens)
-}
-
 /// Parse a proc-macro2 token stream into the chosen syntax tree node.
 ///
 /// This function parses a `proc_macro2::TokenStream` which is commonly useful
 /// when the input comes from a node of the Syn syntax tree, for example the
 /// body tokens of a [`Macro`] node. When in a procedural macro parsing the
-/// `proc_macro::TokenStream` provided by the compiler, use [`syn::parse`]
+/// `proc_macro::TokenStream` provided by the compiler, use [`syn_send::parse`]
 /// instead.
 ///
-/// [`syn::parse`]: parse()
+/// [`syn_send::parse`]: parse()
 ///
 /// This function enforces that the input is fully parsed. If there are any
 /// unparsed tokens at the end of the stream, an error is returned.
@@ -941,11 +918,11 @@ pub fn parse2<T: parse::Parse>(tokens: proc_macro2::TokenStream) -> Result<T> {
 /// # Examples
 ///
 /// ```
-/// use syn::{Expr, Result};
+/// use syn_send::{Expr, Result};
 ///
 /// fn run() -> Result<()> {
 ///     let code = "assert_eq!(u8::max_value(), 255)";
-///     let expr = syn::parse_str::<Expr>(code)?;
+///     let expr = syn_send::parse_str::<Expr>(code)?;
 ///     println!("{:#?}", expr);
 ///     Ok(())
 /// }
@@ -960,7 +937,7 @@ pub fn parse_str<T: parse::Parse>(s: &str) -> Result<T> {
 
 /// Parse the content of a file of Rust code.
 ///
-/// This is different from `syn::parse_str::<File>(content)` in two ways:
+/// This is different from `syn_send::parse_str::<File>(content)` in two ways:
 ///
 /// - It discards a leading byte order mark `\u{FEFF}` if the file has one.
 /// - It preserves the shebang line of the file, such as `#!/usr/bin/env rustx`.
@@ -976,7 +953,7 @@ pub fn parse_str<T: parse::Parse>(s: &str) -> Result<T> {
 ///
 /// fn run() -> Result<(), Box<dyn Error>> {
 ///     let content = fs::read_to_string("path/to/code.rs")?;
-///     let ast = syn::parse_file(&content)?;
+///     let ast = syn_send::parse_file(&content)?;
 ///     if let Some(shebang) = ast.shebang {
 ///         println!("{}", shebang);
 ///     }

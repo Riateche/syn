@@ -1,4 +1,4 @@
-Parse a Rust source file into a `syn::File` and print out a debug representation
+Parse a Rust source file into a `syn_send::File` and print out a debug representation
 of the syntax tree.
 
 Use the following command from this directory to test this program by running it

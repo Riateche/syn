@@ -9,7 +9,7 @@
 ///
 /// ```
 /// mod kw {
-///     syn::custom_keyword!(whatever);
+///     syn_send::custom_keyword!(whatever);
 /// }
 /// ```
 ///
@@ -39,17 +39,17 @@
 /// be any string literal.
 ///
 /// The symbols `bool` and `str` are not reserved keywords in Rust so these are
-/// not considered keywords in the `syn::token` module. Like any other
+/// not considered keywords in the `syn_send::token` module. Like any other
 /// identifier that is not a keyword, these can be declared as custom keywords
 /// by crates that need to use them as such.
 ///
 /// ```
-/// use syn::{LitBool, LitStr, Result, Token};
-/// use syn::parse::{Parse, ParseStream};
+/// use syn_send::{LitBool, LitStr, Result, Token};
+/// use syn_send::parse::{Parse, ParseStream};
 ///
 /// mod kw {
-///     syn::custom_keyword!(bool);
-///     syn::custom_keyword!(str);
+///     syn_send::custom_keyword!(bool);
+///     syn_send::custom_keyword!(str);
 /// }
 ///
 /// enum Argument {

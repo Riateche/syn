@@ -64,16 +64,6 @@ impl Clone for crate::AssocType {
 }
 #[cfg(any(feature = "derive", feature = "full"))]
 #[cfg_attr(docsrs, doc(cfg(feature = "clone-impls")))]
-impl Copy for crate::AttrStyle {}
-#[cfg(any(feature = "derive", feature = "full"))]
-#[cfg_attr(docsrs, doc(cfg(feature = "clone-impls")))]
-impl Clone for crate::AttrStyle {
-    fn clone(&self) -> Self {
-        *self
-    }
-}
-#[cfg(any(feature = "derive", feature = "full"))]
-#[cfg_attr(docsrs, doc(cfg(feature = "clone-impls")))]
 impl Clone for crate::Attribute {
     fn clone(&self) -> Self {
         crate::Attribute {
@@ -107,16 +97,6 @@ impl Clone for crate::BareVariadic {
         }
     }
 }
-#[cfg(any(feature = "derive", feature = "full"))]
-#[cfg_attr(docsrs, doc(cfg(feature = "clone-impls")))]
-impl Copy for crate::BinOp {}
-#[cfg(any(feature = "derive", feature = "full"))]
-#[cfg_attr(docsrs, doc(cfg(feature = "clone-impls")))]
-impl Clone for crate::BinOp {
-    fn clone(&self) -> Self {
-        *self
-    }
-}
 #[cfg(feature = "full")]
 #[cfg_attr(docsrs, doc(cfg(feature = "clone-impls")))]
 impl Clone for crate::Block {
@@ -144,9 +124,7 @@ impl Clone for crate::BoundLifetimes {
 impl Clone for crate::CapturedParam {
     fn clone(&self) -> Self {
         match self {
-            crate::CapturedParam::Lifetime(v0) => {
-                crate::CapturedParam::Lifetime(v0.clone())
-            }
+            crate::CapturedParam::Lifetime(v0) => crate::CapturedParam::Lifetime(v0.clone()),
             crate::CapturedParam::Ident(v0) => crate::CapturedParam::Ident(v0.clone()),
         }
     }
@@ -948,16 +926,10 @@ impl Clone for crate::ForeignItemType {
 impl Clone for crate::GenericArgument {
     fn clone(&self) -> Self {
         match self {
-            crate::GenericArgument::Lifetime(v0) => {
-                crate::GenericArgument::Lifetime(v0.clone())
-            }
+            crate::GenericArgument::Lifetime(v0) => crate::GenericArgument::Lifetime(v0.clone()),
             crate::GenericArgument::Type(v0) => crate::GenericArgument::Type(v0.clone()),
-            crate::GenericArgument::Const(v0) => {
-                crate::GenericArgument::Const(v0.clone())
-            }
-            crate::GenericArgument::AssocType(v0) => {
-                crate::GenericArgument::AssocType(v0.clone())
-            }
+            crate::GenericArgument::Const(v0) => crate::GenericArgument::Const(v0.clone()),
+            crate::GenericArgument::AssocType(v0) => crate::GenericArgument::AssocType(v0.clone()),
             crate::GenericArgument::AssocConst(v0) => {
                 crate::GenericArgument::AssocConst(v0.clone())
             }
@@ -972,9 +944,7 @@ impl Clone for crate::GenericArgument {
 impl Clone for crate::GenericParam {
     fn clone(&self) -> Self {
         match self {
-            crate::GenericParam::Lifetime(v0) => {
-                crate::GenericParam::Lifetime(v0.clone())
-            }
+            crate::GenericParam::Lifetime(v0) => crate::GenericParam::Lifetime(v0.clone()),
             crate::GenericParam::Type(v0) => crate::GenericParam::Type(v0.clone()),
             crate::GenericParam::Const(v0) => crate::GenericParam::Const(v0.clone()),
         }
@@ -1426,9 +1396,7 @@ impl Clone for crate::MacroDelimiter {
         match self {
             crate::MacroDelimiter::Paren(v0) => crate::MacroDelimiter::Paren(v0.clone()),
             crate::MacroDelimiter::Brace(v0) => crate::MacroDelimiter::Brace(v0.clone()),
-            crate::MacroDelimiter::Bracket(v0) => {
-                crate::MacroDelimiter::Bracket(v0.clone())
-            }
+            crate::MacroDelimiter::Bracket(v0) => crate::MacroDelimiter::Bracket(v0.clone()),
         }
     }
 }
@@ -1679,12 +1647,8 @@ impl Clone for crate::PathSegment {
 impl Clone for crate::PointerMutability {
     fn clone(&self) -> Self {
         match self {
-            crate::PointerMutability::Const(v0) => {
-                crate::PointerMutability::Const(v0.clone())
-            }
-            crate::PointerMutability::Mut(v0) => {
-                crate::PointerMutability::Mut(v0.clone())
-            }
+            crate::PointerMutability::Const(v0) => crate::PointerMutability::Const(v0.clone()),
+            crate::PointerMutability::Mut(v0) => crate::PointerMutability::Mut(v0.clone()),
         }
     }
 }
@@ -1738,16 +1702,6 @@ impl Clone for crate::QSelf {
 }
 #[cfg(feature = "full")]
 #[cfg_attr(docsrs, doc(cfg(feature = "clone-impls")))]
-impl Copy for crate::RangeLimits {}
-#[cfg(feature = "full")]
-#[cfg_attr(docsrs, doc(cfg(feature = "clone-impls")))]
-impl Clone for crate::RangeLimits {
-    fn clone(&self) -> Self {
-        *self
-    }
-}
-#[cfg(feature = "full")]
-#[cfg_attr(docsrs, doc(cfg(feature = "clone-impls")))]
 impl Clone for crate::Receiver {
     fn clone(&self) -> Self {
         crate::Receiver {
@@ -1766,9 +1720,7 @@ impl Clone for crate::ReturnType {
     fn clone(&self) -> Self {
         match self {
             crate::ReturnType::Default => crate::ReturnType::Default,
-            crate::ReturnType::Type(v0, v1) => {
-                crate::ReturnType::Type(v0.clone(), v1.clone())
-            }
+            crate::ReturnType::Type(v0, v1) => crate::ReturnType::Type(v0.clone(), v1.clone()),
         }
     }
 }
@@ -1834,16 +1786,6 @@ impl Clone for crate::TraitBound {
             lifetimes: self.lifetimes.clone(),
             path: self.path.clone(),
         }
-    }
-}
-#[cfg(any(feature = "derive", feature = "full"))]
-#[cfg_attr(docsrs, doc(cfg(feature = "clone-impls")))]
-impl Copy for crate::TraitBoundModifier {}
-#[cfg(any(feature = "derive", feature = "full"))]
-#[cfg_attr(docsrs, doc(cfg(feature = "clone-impls")))]
-impl Clone for crate::TraitBoundModifier {
-    fn clone(&self) -> Self {
-        *self
     }
 }
 #[cfg(feature = "full")]
@@ -2032,16 +1974,12 @@ impl Clone for crate::TypeParamBound {
     fn clone(&self) -> Self {
         match self {
             crate::TypeParamBound::Trait(v0) => crate::TypeParamBound::Trait(v0.clone()),
-            crate::TypeParamBound::Lifetime(v0) => {
-                crate::TypeParamBound::Lifetime(v0.clone())
-            }
+            crate::TypeParamBound::Lifetime(v0) => crate::TypeParamBound::Lifetime(v0.clone()),
             #[cfg(feature = "full")]
             crate::TypeParamBound::PreciseCapture(v0) => {
                 crate::TypeParamBound::PreciseCapture(v0.clone())
             }
-            crate::TypeParamBound::Verbatim(v0) => {
-                crate::TypeParamBound::Verbatim(v0.clone())
-            }
+            crate::TypeParamBound::Verbatim(v0) => crate::TypeParamBound::Verbatim(v0.clone()),
             #[cfg(not(feature = "full"))]
             _ => unreachable!(),
         }
@@ -2119,16 +2057,6 @@ impl Clone for crate::TypeTuple {
             paren_token: self.paren_token.clone(),
             elems: self.elems.clone(),
         }
-    }
-}
-#[cfg(any(feature = "derive", feature = "full"))]
-#[cfg_attr(docsrs, doc(cfg(feature = "clone-impls")))]
-impl Copy for crate::UnOp {}
-#[cfg(any(feature = "derive", feature = "full"))]
-#[cfg_attr(docsrs, doc(cfg(feature = "clone-impls")))]
-impl Clone for crate::UnOp {
-    fn clone(&self) -> Self {
-        *self
     }
 }
 #[cfg(feature = "full")]
@@ -2236,9 +2164,7 @@ impl Clone for crate::Visibility {
     fn clone(&self) -> Self {
         match self {
             crate::Visibility::Public(v0) => crate::Visibility::Public(v0.clone()),
-            crate::Visibility::Restricted(v0) => {
-                crate::Visibility::Restricted(v0.clone())
-            }
+            crate::Visibility::Restricted(v0) => crate::Visibility::Restricted(v0.clone()),
             crate::Visibility::Inherited => crate::Visibility::Inherited,
         }
     }
@@ -2258,9 +2184,7 @@ impl Clone for crate::WhereClause {
 impl Clone for crate::WherePredicate {
     fn clone(&self) -> Self {
         match self {
-            crate::WherePredicate::Lifetime(v0) => {
-                crate::WherePredicate::Lifetime(v0.clone())
-            }
+            crate::WherePredicate::Lifetime(v0) => crate::WherePredicate::Lifetime(v0.clone()),
             crate::WherePredicate::Type(v0) => crate::WherePredicate::Type(v0.clone()),
         }
     }

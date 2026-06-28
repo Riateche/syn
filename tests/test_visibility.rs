@@ -11,8 +11,8 @@ mod debug;
 
 use proc_macro2::{Delimiter, Group, Ident, Punct, Spacing, Span, TokenStream, TokenTree};
 use quote::quote;
-use syn::parse::{Parse, ParseStream};
-use syn::{DeriveInput, Result, Visibility};
+use syn_send::parse::{Parse, ParseStream};
+use syn_send::{DeriveInput, Result, Visibility};
 
 #[derive(Debug)]
 struct VisRest {
@@ -36,7 +36,7 @@ macro_rules! assert_vis_parse {
 
     ($input:expr, Ok($p:pat) + $rest:expr) => {
         let expected = $rest.parse::<TokenStream>().unwrap();
-        let parse: VisRest = syn::parse_str($input).unwrap();
+        let parse: VisRest = syn_send::parse_str($input).unwrap();
 
         match parse.vis {
             $p => {}
@@ -49,7 +49,7 @@ macro_rules! assert_vis_parse {
     };
 
     ($input:expr, Err) => {
-        syn::parse2::<VisRest>($input.parse().unwrap()).unwrap_err();
+        syn_send::parse2::<VisRest>($input.parse().unwrap()).unwrap_err();
     };
 }
 

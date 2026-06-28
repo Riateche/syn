@@ -108,8 +108,8 @@ pub(crate) mod parsing {
         /// # Example
         ///
         /// ```
-        /// use syn::{braced, token, Attribute, Block, Ident, Result, Stmt, Token};
-        /// use syn::parse::{Parse, ParseStream};
+        /// use syn_send::{braced, token, Attribute, Block, Ident, Result, Stmt, Token};
+        /// use syn_send::parse::{Parse, ParseStream};
         ///
         /// // Parse a function with no generics or parameter list.
         /// //
